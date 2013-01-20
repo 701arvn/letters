@@ -1,0 +1,3 @@
+*.pyc
+letterpress/local_settings.py
+dbdb
