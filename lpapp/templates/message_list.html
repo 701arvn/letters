@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load url from future %}
+<div>
+    <ul id="messages">
+    {% for message in message_list %}
+        <li>{{ message.text }}</li>
+    {% endfor %}
+    </ul>
+</div>
+<div>
+    <form method="POST" id="new_message_form">{% csrf_token %}
+    <input type="text" id="mes_text" name="message_text">
+    <input type="submit" value="SEND">
+    </form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#new_message_form').submit(function() {
+        var data = $(this).serialize();
+        var input = $('#mes_text')
+        $.post('{% url "create_message" %}', data, function(data){
+            console.log(data);
+            $("ul#messages").append($('<li>').text(input.val()));
+            input.val('');
+        })
+        return false;
+
+});
+})
+</script>
+{% endblock %}
