@@ -14,5 +14,8 @@ def create_message(request):
     else:
         user = request.user
     m = Message(user=user, text=request.POST['message_text'])
-    m.save()
-    return HttpResponse("HELLO!!")
+    try:
+        m.save(uniq_id=request.POST['uniq_id'])
+    except Exception as e:
+        print str(e)
+    return HttpResponse("OK")

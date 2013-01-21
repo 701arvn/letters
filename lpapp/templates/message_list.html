@@ -18,6 +18,7 @@
 $(document).ready(function(){
     $('#new_message_form').submit(function() {
         var data = $(this).serialize();
+        data += '&uniq_id='+uniq_id;
         var input = $('#mes_text')
         $.post('{% url "create_message" %}', data, function(data){
             console.log(data);
@@ -28,5 +29,27 @@ $(document).ready(function(){
 
 });
 })
+</script>
+<script>
+    var sock = new SockJS('http://localhost:8001/sockjs');
+    var uniq_id = null;
+    sock.onopen = function() {
+        console.log('open');
+     };
+    sock.onmessage = function(e) {
+        console.log('message', e.data);
+        var eventType = e.data.event;
+        if (eventType == 'message-create'){
+            var eventData = JSON.parse(e.data.data);
+            $("ul#messages").append($('<li>').css({color: 'red'}).text(eventData.text));
+        }
+        else if (eventType == 'init'){
+            uniq_id = e.data.uniq_id;
+            console.log(uniq_id);
+        }
+    };
+    sock.onclose = function() {
+        console.log('close');
+    };
 </script>
 {% endblock %}
