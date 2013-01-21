@@ -2,26 +2,25 @@
 {% block content %}
 {% load url from future %}
 <div>
-    <ul id="messages">
-    {% for message in message_list %}
-        <li>{{ message.text }}</li>
-    {% endfor %}
-    </ul>
-</div>
-<div>
     <form method="POST" id="new_message_form">{% csrf_token %}
     <input type="text" id="mes_text" name="message_text">
     <input type="submit" value="SEND">
     </form>
 </div>
+<div>
+    <ul id="messages">
+    {% for message in message_list %}
+        <li>{{ message.user.username }}: {{ message.text }}</li>
+    {% endfor %}
+    </ul>
+</div>
 <script type="text/javascript">
 $(document).ready(function(){
     $('#new_message_form').submit(function() {
         var data = $(this).serialize();
+        data += "&session_id={{ session_id }}"
         var input = $('#mes_text')
         $.post('{% url "create_message" %}', data, function(data){
-            console.log(data);
-            // $("ul#messages").append($('<li>').text(input.val()));
             input.val('');
         })
         return false;
@@ -30,20 +29,26 @@ $(document).ready(function(){
 })
 </script>
 <script>
-    var sock = new SockJS('http://localhost:8001/sockjs');
+    var sock = new SockJS('{{ async_url }}/sockjs');
     sock.onopen = function() {
         console.log('open');
+        send_session_id()
      };
     sock.onmessage = function(e) {
-        console.log('message', e.data);
         var eventType = e.data.event;
         if (eventType == 'message-create'){
             var eventData = JSON.parse(e.data.data);
-            $("ul#messages").append($('<li>').css({color: 'red'}).text(eventData.text));
+            $("ul#messages").prepend($('<li>').css({color: 'red'}).text(eventData.user+": "+eventData.text));
         }
     };
     sock.onclose = function() {
         console.log('close');
+    };
+    function send_session_id() {
+    sock.send(JSON.stringify({
+        event: "init",
+        session_id: "{{ session_id }}",
+    }))
     };
 </script>
 {% endblock %}
