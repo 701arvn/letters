@@ -21,15 +21,13 @@ class Message(models.Model):
         return json.dumps(data)
 
     def save(self, *args, **kwargs):
-        uniq_id = kwargs.pop('uniq_id')
         super(Message, self).save(*args, **kwargs)
-        send_event('message-create', self.as_dict(), uniq_id)
+        send_event('message-create', self.as_dict())
 
 
-def send_event(event_type, event_data, uniq_id):
+def send_event(event_type, event_data):
     to_send = {
         'event': event_type,
         'data': event_data,
-        'uniq_id': uniq_id,
     }
     urllib2.urlopen('http://localhost:8001', urllib.urlencode(to_send))

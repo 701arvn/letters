@@ -15,7 +15,7 @@ def create_message(request):
         user = request.user
     m = Message(user=user, text=request.POST['message_text'])
     try:
-        m.save(uniq_id=request.POST['uniq_id'])
+        m.save()
     except Exception as e:
         print str(e)
     return HttpResponse("OK")
