@@ -13,9 +13,9 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^mongonaut/', include('mongonaut.urls')),
 
-    url(r'^game/', 'lpapp.views.main_game_view'),
+    url(r'^game/$', 'lpapp.views.main_game_view'),
     url(r"^game/(?P<session_id>\w+)/$", 'lpapp.views.game_view',
-        name='game_view'
+        name='new_game_view'
     ),
 
     url(

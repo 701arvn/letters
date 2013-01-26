@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+import string
+import random
 import urllib2
 import urllib
 import json
@@ -8,6 +10,8 @@ from mongoengine import *
 
 
 class EnglishWords(Document):
+    WORDS_COUNT = 60388
+
     word_id = IntField()
     word = StringField(max_length=30)
 
@@ -34,6 +38,33 @@ class Game(Document):
     played_letters = ListField(EmbeddedDocumentField(PlayedLetters))
     session_id = StringField(max_length=20)
 
+
+def clean_list(letters):
+    for letter in string.ascii_lowercase:
+        if letters.count(letter) >= 3 and len(letters) > 25:
+            letters.remove(letter)
+    if len(letters) > 25:
+        letters = letters[:25]
+    return letters
+
+
+def generate_letters():
+    letters = []
+    while len(letters) <= 25:
+        word_id = random.randint(1, EnglishWords.WORDS_COUNT)
+        word = EnglishWords.objects.get(word_id=word_id).word
+        letters += list(word)
+    random.shuffle(letters)
+    letters = clean_list(letters)
+    return letters
+
+
+def generate_game(user, session_id):
+    game = Game(gamers=[user.pk], session_id=session_id)
+    letters = generate_letters()
+    for i, letter in enumerate(letters):
+        game.letters.append(Letter(letter_id=i + 1, letter=letter))
+    game.save()
 
 
 class Message(models.Model):

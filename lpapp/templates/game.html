@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load url from future %}
+<table>
+  <tr>
+    {% for entry in letters %}
+        <td id="letter_{{ entry.letter_id }}">{{ entry.letter }}</td>
+    {% endfor %}
+  </tr>
+</table>
+{% endblock %}
