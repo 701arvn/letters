@@ -4,6 +4,36 @@ from django.conf import settings
 import urllib2
 import urllib
 import json
+from mongoengine import *
+
+
+class EnglishWords(Document):
+    word_id = IntField()
+    word = StringField(max_length=30)
+
+
+class Letter(EmbeddedDocument):
+    letter_id = IntField()
+    letter = StringField(max_length=1)
+
+
+class PlayedWords(EmbeddedDocument):
+    gamer = IntField()
+    words = ListField(StringField(max_length=30))
+
+
+class PlayedLetters(EmbeddedDocument):
+    gamer = IntField()
+    letters = ListField(EmbeddedDocumentField(Letter))
+
+
+class Game(Document):
+    gamers = ListField(IntField())
+    played_words = ListField(EmbeddedDocumentField(PlayedWords))
+    letters = ListField(EmbeddedDocumentField(Letter))
+    played_letters = ListField(EmbeddedDocumentField(PlayedLetters))
+    session_id = StringField(max_length=20)
+
 
 
 class Message(models.Model):

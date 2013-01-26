@@ -8,6 +8,11 @@ from django.conf import settings
 from models import *
 
 
+def get_uniq_hash(request):
+    uniq_hash = md5(str(datetime.now()) + request.user.username).hexdigest()[:7]
+    return uniq_hash
+
+
 class MessageListView(generic.ListView):
     template_name = "message_list.html"
 
@@ -23,8 +28,19 @@ class MessageListView(generic.ListView):
 
 @login_required
 def main_view(request):
-    session_id = md5(str(datetime.now()) + request.user.username).hexdigest()
-    return redirect('session_view', session_id=session_id)
+    session_id = get_uniq_hash(request)
+    return redirect('message_view', session_id=session_id)
+
+
+@login_required
+def main_game_view(request):
+    session_id = get_uniq_hash(request)
+    return redirect('game_view', session_id=session_id)
+
+
+@login_required
+def game_view(request):
+    return
 
 
 def create_message(request):

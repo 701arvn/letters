@@ -11,10 +11,17 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'django.contrib.auth.views.logout_then_login'),
     url(r'^$', 'lpapp.views.main_view'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^mongonaut/', include('mongonaut.urls')),
+
+    url(r'^game/', 'lpapp.views.main_game_view'),
+    url(r"^game/(?P<session_id>\w+)/$", 'lpapp.views.game_view',
+        name='game_view'
+    ),
+
     url(
         regex=r"^(?P<session_id>\w+)/$",
         view=login_required(views.MessageListView.as_view()),
-        name='session_view'
+        name='message_view'
     ),
 
     url(r'^create_message', 'lpapp.views.create_message', name='create_message'),
