@@ -1,17 +1,10 @@
-import math
-from hashlib import md5
-from datetime import datetime
 from django.views import generic
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.conf import settings
+from base import get_uniq_hash
 from models import *
-
-
-def get_uniq_hash(request):
-    uniq_hash = md5(str(datetime.now()) + request.user.username).hexdigest()[:7]
-    return uniq_hash
 
 
 class MessageListView(generic.ListView):
@@ -31,29 +24,6 @@ class MessageListView(generic.ListView):
 def main_view(request):
     session_id = get_uniq_hash(request)
     return redirect('message_view', session_id=session_id)
-
-
-@login_required
-def main_game_view(request):
-    session_id = get_uniq_hash(request)
-    generate_game(request.user, session_id)
-    return redirect('new_game_view', session_id=session_id)
-
-
-@login_required
-def game_view(request, session_id):
-    game = Game.objects.get(session_id=session_id)
-    if request.user.pk not in game.gamers:
-        game.gamers.append(request.user.pk)
-    letters_in_row = int(math.sqrt(len(game.letters)))
-    variables = {
-        'session_id': session_id,
-        'async_url': settings.ASYNC_BACKEND_URL,
-        'letters': game.to_mongo()['letters'],
-        'letters_in_row': letters_in_row,
-        'rows_range': xrange(letters_in_row)
-    }
-    return render(request, 'game.html', variables)
 
 
 def create_message(request):

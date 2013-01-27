@@ -7,15 +7,12 @@ ADMINS = (
     ('Evgeny Tataurov', 'tatauroff@gmail.com'),
 )
 
-try:
-    from local_settings import *
-except IOError:
-    pass
-
 MANAGERS = ADMINS
 
+MONGO_DATABASE_NAME = 'letters'
+
 from mongoengine import connect
-connect('letters')
+connect(MONGO_DATABASE_NAME)
 
 DATABASES = {
     'default': {
@@ -120,7 +117,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'lpapp',
+    'lpmessage',
+    'lpgame'
     'mongonaut',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
@@ -160,3 +158,8 @@ LOGGING = {
 LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login/'
+
+try:
+    from local_settings import *
+except IOError:
+    pass
