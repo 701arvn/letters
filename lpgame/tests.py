@@ -1,11 +1,7 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
 from django.test import TestCase
+from django.contrib.auth.models import User
+from base import MongoTestCase
+from models import *
 
 
 class SimpleTest(TestCase):
@@ -14,3 +10,12 @@ class SimpleTest(TestCase):
         Tests that 1 + 1 always equals 2.
         """
         self.assertEqual(1 + 1, 2)
+
+
+class GameTest(MongoTestCase):
+    def setUp(self):
+        User.create_user(username='test_user', password='test')
+        self.client.login()
+
+    def letters_generator(self):
+        pass
