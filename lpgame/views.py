@@ -26,4 +26,4 @@ def game_view(request, session_id):
         'letters_in_row': letters_in_row,
         'rows_range': xrange(letters_in_row)
     }
-    return render(request, 'game.html', variables)
+    return render(request, 'lpgame/game.html', variables)

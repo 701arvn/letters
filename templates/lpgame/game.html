@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load url from future %}
+<table>
+  <tr>
+    {% for entry in letters %}
+        <td id="letter_{{ entry.letter_id }}">
+            <a href="#" class="letter">{{ entry.letter }}</a>
+        </td>
+    {% endfor %}
+  </tr>
+</table>
+<table class="selected">
+    <tr></tr>
+</table>
+<input type="button" id="submit" value="Submit"/>
+<script type="text/javascript">
+$(document).ready(function (){
+    var selected = [];
+    $("a.letter").click(function(){
+        var $this = $(this);
+        var td = $this.parent()
+        selected.push(td.attr('id'));
+        $('table.selected').append(td);
+        console.log(selected);
+    })
+    $('input#submit').click(function(){
+        alert("I WILL SEND ARRAY");
+    })
+})
+</script>
+{% endblock %}
