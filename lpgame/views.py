@@ -27,3 +27,7 @@ def game_view(request, session_id):
         'rows_range': xrange(letters_in_row)
     }
     return render(request, 'lpgame/game.html', variables)
+
+
+def make_turn(request):
+    print request.POST

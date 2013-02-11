@@ -25,7 +25,14 @@ $(document).ready(function (){
         console.log(selected);
     })
     $('input#submit').click(function(){
+        // TODO: add CSRF
         alert("I WILL SEND ARRAY");
+        $.ajax({
+          type: "POST",
+          url: "/game/make_turn/",
+          data: selected,
+          dataType: "json"
+        });
     })
 })
 </script>
