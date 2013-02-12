@@ -4,18 +4,19 @@ from base import MongoTestCase
 from models import *
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
-
-
 class GameTest(MongoTestCase):
     def setUp(self):
-        User.create_user(username='test_user', password='test')
+        self.user = User.objects.create_user(username='test_user', password='test')
         self.client.login()
 
-    def letters_generator(self):
-        pass
+    def test_are_25_letters(self):
+        letters = generate_letters()
+        self.assertEquals(len(letters), 25)
+
+    def test_is_game_generated(self):
+        session_id = '1234567'
+        generate_game(self.user, session_id)
+        game = Game.objects.get(session_id=session_id)
+        self.assertIn(self.user.pk, game.gamers)
+        self.assertEquals(len(game.letters), 25)
+

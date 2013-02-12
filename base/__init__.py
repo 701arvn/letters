@@ -22,8 +22,11 @@ class MongoTestCase(TestCase):
         super(MongoTestCase, self)._pre_setup()
 
     def _post_teardown(self):
-        from mongoengine.connection import get_connection, disconnect
-        connection = get_connection()
-        connection.drop_database(self.mongodb_name)
+        from mongoengine.connection import get_db, disconnect
+        database = get_db()
+        for collection in database.collection_names():
+            if collection == 'system.indexes' or collection == 'english_words':
+                continue
+            database.drop_collection(collection)
         disconnect()
         super(MongoTestCase, self)._post_teardown()
