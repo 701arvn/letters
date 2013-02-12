@@ -10,6 +10,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 MONGO_DATABASE_NAME = 'letters'
+MONGO_PORT = 27017
 
 from mongoengine import connect
 connect(MONGO_DATABASE_NAME)
@@ -161,5 +162,5 @@ LOGIN_URL = '/login/'
 
 try:
     from local_settings import *
-except IOError:
+except ImportError:
     pass
