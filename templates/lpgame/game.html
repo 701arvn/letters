@@ -17,6 +17,8 @@
 <script type="text/javascript">
 $(document).ready(function (){
     var selected = [];
+    var token = "{{csrf_token}}";
+    var session_id = "{{ session_id }}"
     $("a.letter").click(function(){
         var $this = $(this);
         var td = $this.parent()
@@ -25,12 +27,15 @@ $(document).ready(function (){
         console.log(selected);
     })
     $('input#submit').click(function(){
-        // TODO: add CSRF
         alert("I WILL SEND ARRAY");
         $.ajax({
           type: "POST",
           url: "/game/make_turn/",
-          data: selected,
+          data: {
+              'selected': selected,
+              'csrfmiddlewaretoken': token,
+              'session_id': session_id
+          },
           dataType: "json"
         });
     })

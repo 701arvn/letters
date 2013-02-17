@@ -59,3 +59,10 @@ def generate_game(user, session_id):
     for i, letter in enumerate(letters):
         game.letters.append(Letter(letter_id=i + 1, letter=letter))
     game.save()
+
+
+def get_letter_by_id(game, letter_id):
+    for letter in game.letters:
+        if letter.letter_id == letter_id:
+            return letter.letter
+    raise DoesNotExist('No such letter')
