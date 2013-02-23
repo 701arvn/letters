@@ -31,13 +31,21 @@ def game_view(request, session_id):
 
 
 def make_turn(request):
-    session_id = request.POST.get('session_id')
-    selected_letters = request.POST.getlist('selected[]')
-    game = Game.objects.get(session_id=session_id)
-    word = ''
-    for letter_entry in selected_letters:
-        letter_id = int(letter_entry.split('_')[1])  # TODO do it in javascript
-        letter = get_letter_by_id(game, letter_id)
-        word += letter
-    print word
+    try:
+        session_id = request.POST.get('session_id')
+        selected_letters = request.POST.getlist('selected[]')
+        letters = [int(entry.split('_')[1]) for entry in selected_letters] # TODO do it in javascript
+        game = Game.objects.get(session_id=session_id)
+        word = ''
+        for letter_id in letters:
+            letter = get_letter_by_id(game, letter_id)
+            word += letter.letter
+        print word
+        if EnglishWords.is_a_word(word):
+            print "is a word"
+            on_successful_turn(game, word, letters, request.user)
+        else:
+            return HttpResponse("NOT A WORD")
+    except Exception as exc:
+        print exc
     return HttpResponse("OK")

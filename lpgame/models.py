@@ -9,6 +9,11 @@ class EnglishWords(Document):
     word_id = IntField()
     word = StringField(max_length=30)
 
+    @staticmethod
+    def is_a_word(word):
+        result = EnglishWords.objects(word=word).first()
+        return result is not None
+
 
 class Letter(EmbeddedDocument):
     letter_id = IntField()
@@ -64,5 +69,28 @@ def generate_game(user, session_id):
 def get_letter_by_id(game, letter_id):
     for letter in game.letters:
         if letter.letter_id == letter_id:
-            return letter.letter
+            return letter
     raise DoesNotExist('No such letter')
+
+
+def on_successful_turn(game, word, letters, user):
+    """
+    1. check if in games' played words there is a entry for this gamer
+    2. create new or append
+    3. repeat for letters
+    """
+    for played_words in game.played_words:
+        if played_words.gamer == user.pk:
+            played_words.words.append(word)
+            break
+    else:
+        game.played_words.append(PlayedWords(gamer=user.pk, words=[word]))
+    # TODO check other users' letters
+    for letter in letters:
+        for played_letters in game.played_letters:
+            if played_letters.gamer == user.pk:
+                played_letters.letters.append(get_letter_by_id(game, letter))
+                break
+        else:
+            game.played_letters.append(PlayedLetters(gamer=user.pk, letters=[get_letter_by_id(game, letter)]))
+    game.save()
