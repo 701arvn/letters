@@ -1,5 +1,9 @@
 import random
 import string
+import urllib2
+import urllib
+from django.conf import settings
+
 from mongoengine import *
 
 
@@ -81,16 +85,35 @@ def on_successful_turn(game, word, letters, user):
     """
     for played_words in game.played_words:
         if played_words.gamer == user.pk:
+            if word in played_words.words:
+                raise Exception('Word already used')  # TODO also check in other players words
             played_words.words.append(word)
             break
     else:
         game.played_words.append(PlayedWords(gamer=user.pk, words=[word]))
     # TODO check other users' letters
     for letter in letters:
+        db_letter = get_letter_by_id(game, letter)
         for played_letters in game.played_letters:
             if played_letters.gamer == user.pk:
-                played_letters.letters.append(get_letter_by_id(game, letter))
+                if db_letter not in played_letters.letters:
+                    played_letters.letters.append(db_letter)
                 break
         else:
-            game.played_letters.append(PlayedLetters(gamer=user.pk, letters=[get_letter_by_id(game, letter)]))
+            game.played_letters.append(PlayedLetters(gamer=user.pk, letters=[db_letter]))
     game.save()
+    prepared_letters = []
+    for played_letters in game.played_letters:
+        if played_letters.gamer == user.pk:
+            for letter in played_letters.letters:
+                prepared_letters.append(letter.letter_id)
+    send_event('new_turn', prepared_letters, game.session_id)
+
+
+def send_event(event_type, event_data, session_id):
+    to_send = {
+        'event': event_type,
+        'data': event_data,
+        'session_id': session_id,
+        }
+    urllib2.urlopen(settings.ASYNC_BACKEND_URL, urllib.urlencode(to_send))

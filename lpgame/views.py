@@ -41,9 +41,13 @@ def make_turn(request):
             letter = get_letter_by_id(game, letter_id)
             word += letter.letter
         print word
-        if EnglishWords.is_a_word(word):
+        if EnglishWords.is_a_word(word): # remove this logic from here
             print "is a word"
-            on_successful_turn(game, word, letters, request.user)
+            try:
+                on_successful_turn(game, word, letters, request.user)
+            except Exception as exc:
+                print exc
+                return HttpResponse("Word already used")
         else:
             return HttpResponse("NOT A WORD")
     except Exception as exc:
