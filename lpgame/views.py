@@ -19,13 +19,17 @@ def game_view(request, session_id):
     game = Game.objects.get(session_id=session_id)
     if request.user.pk not in game.gamers:
         game.gamers.append(request.user.pk)
-    letters_in_row = int(math.sqrt(len(game.letters)))
+    letters = game.letters
+    rows_count = int(math.sqrt(len(letters)))
+    rows = []
+    for i in xrange(rows_count):
+        rows.append(letters[i * rows_count: i * rows_count + rows_count])
+
     variables = {
         'session_id': session_id,
         'async_url': settings.ASYNC_BACKEND_URL,
-        'letters': game.to_mongo()['letters'],
-        'letters_in_row': letters_in_row,
-        'rows_range': xrange(letters_in_row)
+        'rows': rows,
+
     }
     return render(request, 'lpgame/game.html', variables)
 
