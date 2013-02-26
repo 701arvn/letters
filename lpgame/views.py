@@ -44,9 +44,10 @@ def make_turn(request):
         if EnglishWords.is_a_word(word): # remove this logic from here
             print "is a word"
             try:
-                on_successful_turn(game, word, letters, request.user)
+                send_event_on_successful_turn(game, word, letters, request.user)
             except Exception as exc:
-                print exc
+                print exc # TODO add logging
+                # TODO there also could be some error with sendin
                 return HttpResponse("Word already used")
         else:
             return HttpResponse("NOT A WORD")

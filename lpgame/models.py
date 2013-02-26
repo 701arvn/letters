@@ -22,6 +22,7 @@ class EnglishWords(Document):
 class Letter(EmbeddedDocument):
     letter_id = IntField()
     letter = StringField(max_length=1)
+    gamer = IntField()
 
 
 class PlayedWords(EmbeddedDocument):
@@ -29,16 +30,10 @@ class PlayedWords(EmbeddedDocument):
     words = ListField(StringField(max_length=30))
 
 
-class PlayedLetters(EmbeddedDocument):
-    gamer = IntField()
-    letters = ListField(EmbeddedDocumentField(Letter))
-
-
 class Game(Document):
     gamers = ListField(IntField())
     played_words = ListField(EmbeddedDocumentField(PlayedWords))
     letters = ListField(EmbeddedDocumentField(Letter))
-    played_letters = ListField(EmbeddedDocumentField(PlayedLetters))
     session_id = StringField(max_length=20)
 
 
@@ -68,6 +63,7 @@ def generate_game(user, session_id):
     for i, letter in enumerate(letters):
         game.letters.append(Letter(letter_id=i + 1, letter=letter))
     game.save()
+    return game
 
 
 def get_letter_by_id(game, letter_id):
@@ -77,37 +73,29 @@ def get_letter_by_id(game, letter_id):
     raise DoesNotExist('No such letter')
 
 
+def send_event_on_successful_turn(game, word, letters, user):
+    letters_to_send = on_successful_turn(game, word, letters, user)
+    send_event('new_turn', letters_to_send, game.session_id)
+
+
 def on_successful_turn(game, word, letters, user):
-    """
-    1. check if in games' played words there is a entry for this gamer
-    2. create new or append
-    3. repeat for letters
-    """
+    user_words = None
     for played_words in game.played_words:
+        if word in played_words.words:
+            raise Exception('Word already used')
         if played_words.gamer == user.pk:
-            if word in played_words.words:
-                raise Exception('Word already used')  # TODO also check in other players words
-            played_words.words.append(word)
-            break
+            user_words = played_words
+    if user_words is not None:
+        user_words.words.append(word)
     else:
         game.played_words.append(PlayedWords(gamer=user.pk, words=[word]))
-    # TODO check other users' letters
+    prepared_letters = []
     for letter in letters:
         db_letter = get_letter_by_id(game, letter)
-        for played_letters in game.played_letters:
-            if played_letters.gamer == user.pk:
-                if db_letter not in played_letters.letters:
-                    played_letters.letters.append(db_letter)
-                break
-        else:
-            game.played_letters.append(PlayedLetters(gamer=user.pk, letters=[db_letter]))
+        db_letter.gamer = user.pk
+        prepared_letters.append(db_letter.letter_id)
     game.save()
-    prepared_letters = []
-    for played_letters in game.played_letters:
-        if played_letters.gamer == user.pk:
-            for letter in played_letters.letters:
-                prepared_letters.append(letter.letter_id)
-    send_event('new_turn', prepared_letters, game.session_id)
+    return prepared_letters
 
 
 def send_event(event_type, event_data, session_id):
