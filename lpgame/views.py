@@ -1,8 +1,9 @@
 import math
+import json
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from base import get_uniq_hash
 from models import *
 
@@ -52,9 +53,9 @@ def make_turn(request):
             except Exception as exc:
                 print exc # TODO add logging
                 # TODO there also could be some error with sendin
-                return HttpResponse("Word already used")
+                raise Http404("Word already used")
         else:
-            return HttpResponse("NOT A WORD")
+            raise Http404("NOT A WORD")
     except Exception as exc:
         print exc
-    return HttpResponse("OK")
+    return HttpResponse(json.dumps({'status': 'ok'}), mimetype="application/json")

@@ -6,16 +6,17 @@
     {% for letters in rows %}
         <div class="row-fluid show-grid">
         {% for entry in letters %}
-            <div class="span1" id="letter_{{ entry.letter_id }}">
-                <a href="#" class="letter">{{ entry.letter }}</a>
+            <a href="#" class="letter">
+            <div class="span1" id="letter_{{ entry.letter_id }}" style="text-align:center;">
+                {{ entry.letter }}
             </div>
+            </a>
         {% endfor %}
         </div>
     {% endfor %}
     </div>
-    <table class="selected">
-        <tr></tr>
-    </table>
+    <div class="selected">
+    </div>
     <input type="button" id="submit" value="Submit" class="btn"/>
 </div>
 <script type="text/javascript">
@@ -25,25 +26,30 @@ $(document).ready(function (){
     var session_id = "{{ session_id }}"
     $("a.letter").click(function(){
         var $this = $(this);
-        var td = $this.parent()
-        selected.push(td.attr('id'));
-        $('table.selected').append(td);
-        console.log(selected);
-    })
+        var div = $this.children();
+        if (selected.indexOf(div.attr('id')) == -1){
+            selected.push(div.attr('id'));
+            div.css({'background-color':'gray'});
+            console.log(selected);
+        }
+    });
     $('input#submit').click(function(){
-        alert("I WILL SEND ARRAY");
         $.ajax({
-          type: "POST",
-          url: "/game/make_turn/",
-          data: {
-              'selected': selected,
-              'csrfmiddlewaretoken': token,
-              'session_id': session_id
-          },
-          dataType: "json"
-        });
+            type: "POST",
+            url: "/game/make_turn/",
+            cache: false,
+            data: {
+                'selected': selected,
+                'csrfmiddlewaretoken': token,
+                'session_id': session_id
+            },
+            dataType: "json"
+        }).done(function(data){
+            selected = [];
+            $('a.letter').children().css({'background-color':'white'});
+        })
     })
-})
+});
 var sock = new SockJS('{{ async_url }}/sockjs');
 sock.onopen = function() {
     console.log('open');
