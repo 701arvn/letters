@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block head %}
+    <link href="{{ STATIC_URL }}game.css" rel="stylesheet">
+{% endblock %}
 {% block content %}
 {% load url from future %}
 <div class="container">
@@ -7,9 +10,17 @@
         <div class="row-fluid show-grid">
         {% for entry in letters %}
             <a href="#" class="letter">
-            <div class="span1" id="letter_{{ entry.letter_id }}" style="text-align:center;">
-                {{ entry.letter }}
-            </div>
+            {% if entry.gamer %}
+                {% if entry.gamer == user_id %}
+                    <div class="span1 user1" id="letter_{{ entry.letter_id }}">
+                {% else %}
+                    <div class="span1 user2" id="letter_{{ entry.letter_id }}">
+                {% endif %}
+            {% else %}
+                <div class="span1" id="letter_{{ entry.letter_id }}">
+            {% endif %}
+                    {{ entry.letter }}
+                </div>
             </a>
         {% endfor %}
         </div>
@@ -27,9 +38,10 @@ $(document).ready(function (){
     $("a.letter").click(function(){
         var $this = $(this);
         var div = $this.children();
-        if (selected.indexOf(div.attr('id')) == -1){
-            selected.push(div.attr('id'));
-            div.css({'background-color':'gray'});
+        var let_id = div.attr('id').split('_')[1];
+        if (selected.indexOf(let_id) == -1){
+            selected.push(let_id);
+            $(div).addClass('checked');
             console.log(selected);
         }
     });
@@ -46,7 +58,7 @@ $(document).ready(function (){
             dataType: "json"
         }).done(function(data){
             selected = [];
-            $('a.letter').children().css({'background-color':'white'});
+{#            $('a.letter').children().css({'background-color':'white'});#}
         })
     })
 });
@@ -56,10 +68,23 @@ sock.onopen = function() {
     send_session_id()
 };
 sock.onmessage = function(e) {
+    console.log(e)
     var eventType = e.data.event;
+    console.log(e.data)
     if (eventType == 'new_turn'){
-        console.log(e.data)
-        var eventData = JSON.parse(e.data.data);
+        var eventLetters = JSON.parse(e.data.data);
+        var eventUser = e.data.user;
+        eventLetters.forEach(function(l_id){
+            console.log(l_id);
+            var user = null;
+            if (eventUser == {{ user_id }}){
+                user = 'user1';
+            }
+            else{
+                user = 'user2';
+            }
+            $('a.letter #letter_'+l_id).addClass(user);
+        })
     }
 };
 sock.onclose = function() {
@@ -68,7 +93,7 @@ sock.onclose = function() {
 function send_session_id() {
     sock.send(JSON.stringify({
         event: "init",
-        session_id: "{{ session_id }}",
+        session_id: "{{ session_id }}"
     }))
 };
 </script>

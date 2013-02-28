@@ -30,7 +30,7 @@ def game_view(request, session_id):
         'session_id': session_id,
         'async_url': settings.ASYNC_BACKEND_URL,
         'rows': rows,
-
+        'user_id': request.user.pk,
     }
     return render(request, 'lpgame/game.html', variables)
 
@@ -39,11 +39,11 @@ def make_turn(request):
     try:
         session_id = request.POST.get('session_id')
         selected_letters = request.POST.getlist('selected[]')
-        letters = [int(entry.split('_')[1]) for entry in selected_letters] # TODO do it in javascript
+        letters = [int(entry) for entry in selected_letters]
         game = Game.objects.get(session_id=session_id)
         word = ''
         for letter_id in letters:
-            letter = get_letter_by_id(game, letter_id)
+            letter = get_letter_by_id(game, int(letter_id))
             word += letter.letter
         print word
         if EnglishWords.is_a_word(word): # remove this logic from here
@@ -52,10 +52,11 @@ def make_turn(request):
                 send_event_on_successful_turn(game, word, letters, request.user)
             except Exception as exc:
                 print exc # TODO add logging
-                # TODO there also could be some error with sendin
+                # TODO there also could be some error with sending
                 raise Http404("Word already used")
         else:
             raise Http404("NOT A WORD")
     except Exception as exc:
         print exc
+        raise
     return HttpResponse(json.dumps({'status': 'ok'}), mimetype="application/json")

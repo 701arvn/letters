@@ -75,7 +75,7 @@ def get_letter_by_id(game, letter_id):
 
 def send_event_on_successful_turn(game, word, letters, user):
     letters_to_send = on_successful_turn(game, word, letters, user)
-    send_event('new_turn', letters_to_send, game.session_id)
+    send_event('new_turn', letters_to_send, game.session_id, user.pk)
 
 
 def on_successful_turn(game, word, letters, user):
@@ -98,10 +98,11 @@ def on_successful_turn(game, word, letters, user):
     return prepared_letters
 
 
-def send_event(event_type, event_data, session_id):
+def send_event(event_type, event_data, session_id, user):
     to_send = {
         'event': event_type,
         'data': event_data,
         'session_id': session_id,
+        'user': user
         }
     urllib2.urlopen(settings.ASYNC_BACKEND_URL, urllib.urlencode(to_send))
