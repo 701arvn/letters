@@ -28,6 +28,7 @@
     </div>
     <div class="selected">
     </div>
+    <br/>
     <input type="button" id="submit" value="Submit" class="btn"/>
 </div>
 <script type="text/javascript">
@@ -43,6 +44,7 @@ $(document).ready(function (){
             selected.push(let_id);
             $(div).addClass('checked');
             console.log(selected);
+            $('div.selected').append($(div).clone());
         }
     });
     $('input#submit').click(function(){
@@ -58,9 +60,15 @@ $(document).ready(function (){
             dataType: "json"
         }).done(function(data){
             selected = [];
-{#            $('a.letter').children().css({'background-color':'white'});#}
-        })
-    })
+            $('div.selected').html('');
+            $('div.checked').removeClass('checked');
+        }).fail(function(data){
+            selected = [];
+            $('div.selected').html('');
+            $('div.checked').removeClass('checked');
+            alert('error');
+	})
+	})
 });
 var sock = new SockJS('{{ async_url }}/sockjs');
 sock.onopen = function() {
