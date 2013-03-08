@@ -30,6 +30,7 @@
     </div>
     <br/>
     <input type="button" id="submit" value="Submit" class="btn"/>
+    <input type="button" id="end_game" value="End game" class="btn"/>
 </div>
 <script type="text/javascript">
 $(document).ready(function (){
@@ -67,8 +68,20 @@ $(document).ready(function (){
             $('div.selected').html('');
             $('div.checked').removeClass('checked');
             alert('error');
-	})
-	})
+    })
+    })
+    $('input#end_game').click(function(){
+            $.ajax({
+                type: "POST",
+                url: "/game/end_game/",
+                cache: false,
+                data: {
+                    'csrfmiddlewaretoken': token,
+                    'session_id': session_id
+                },
+                dataType: "json"
+            })
+    });
 });
 var sock = new SockJS('{{ async_url }}/sockjs');
 sock.onopen = function() {

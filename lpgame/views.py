@@ -17,9 +17,13 @@ def main_game_view(request):
 
 @login_required
 def game_view(request, session_id):
+    # TODO check if game ended
     game = Game.objects.get(session_id=session_id)
     if request.user.pk not in game.gamers:
+        if len(game.gamers) == game.MAX_GAMERS:
+            raise Http404
         game.gamers.append(request.user.pk)
+        game.save()
     letters = game.letters
     rows_count = int(math.sqrt(len(letters)))
     rows = []
@@ -37,6 +41,7 @@ def game_view(request, session_id):
 
 def make_turn(request):
     try:
+        # TODO check if game ended
         session_id = request.POST.get('session_id')
         selected_letters = request.POST.getlist('selected[]')
         letters = [int(entry) for entry in selected_letters]
@@ -60,3 +65,11 @@ def make_turn(request):
         print exc
         raise
     return HttpResponse(json.dumps({'status': 'ok'}), mimetype="application/json")
+
+
+def end_game(request):
+    session_id = request.POST.get('session_id')
+    game = Game.objects.get(session_id=session_id)
+    game.end()
+    return HttpResponse(json.dumps({'status': 'ok'}), mimetype="application/json")
+

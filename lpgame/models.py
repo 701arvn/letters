@@ -31,10 +31,17 @@ class PlayedWords(EmbeddedDocument):
 
 
 class Game(Document):
+    MAX_GAMERS = 2
+    ended = BooleanField(default=False)
     gamers = ListField(IntField())
     played_words = ListField(EmbeddedDocumentField(PlayedWords))
     letters = ListField(EmbeddedDocumentField(Letter))
     session_id = StringField(max_length=20)
+
+    def end(self):
+        self.ended = True
+        self.save()
+        send_event('game_ended', {}, self.session_id)
 
 
 def clean_list(letters):
@@ -98,7 +105,7 @@ def on_successful_turn(game, word, letters, user):
     return prepared_letters
 
 
-def send_event(event_type, event_data, session_id, user):
+def send_event(event_type, event_data, session_id, user=None):
     to_send = {
         'event': event_type,
         'data': event_data,

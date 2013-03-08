@@ -6,7 +6,8 @@ from models import *
 class GameTest(MongoTestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='test_user', password='test')
-        self.client.login()
+        self.user2 = User.objects.create_user(username='test_user2', password='test')
+        # self.client.login()
 
     def test_are_25_letters(self):
         letters = generate_letters()
@@ -42,16 +43,19 @@ class GameTest(MongoTestCase):
         for word_letter in word_letters:
             self.assertIn(word_letter, game.letters)
             self.assertEqual(word_letter.gamer, self.user.pk)
-        # test that you cant use same word twice
+        # tests that you cant use same word twice
         self.assertRaises(
             Exception,
             on_successful_turn,
             game, word, [l.letter_id for l in word_letters], self.user
         )
-        # TODO when game will handle adding new user
-        # user2 = User.objects.create_user(username='test_user', password='test')
-        # self.assertRaises(
-        #     Exception,
-        #     on_successful_turn,
-        #     game, 'word', [l.letter_id for l in word_letters], user2
-        # )
+        # tests that other user also cant use this word
+        self.assertRaises(
+            Exception,
+            on_successful_turn,
+            game, word, [l.letter_id for l in word_letters], self.user2
+        )
+
+    def test_check_only_two_users_in_game(self):
+        #TODO if possible
+        pass
