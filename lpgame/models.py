@@ -37,11 +37,24 @@ class Game(Document):
     played_words = ListField(EmbeddedDocumentField(PlayedWords))
     letters = ListField(EmbeddedDocumentField(Letter))
     session_id = StringField(max_length=20)
+    current_player = IntField()
 
     def end(self):
         self.ended = True
         self.save()
         send_event('game_ended', {}, self.session_id)
+
+    def is_current_player(self, user_id):
+        return user_id == self.current_player
+ 
+    def change_current_player(self):
+        for gamer in self.gamers:
+            if self.is_current_player(gamer):
+                continue
+            else:
+                self.current_player = gamer
+                break
+        self.save()
 
 
 def clean_list(letters):
@@ -69,6 +82,7 @@ def generate_game(user, session_id):
     letters = generate_letters()
     for i, letter in enumerate(letters):
         game.letters.append(Letter(letter_id=i + 1, letter=letter))
+    game.current_player = user.pk
     game.save()
     return game
 
@@ -102,6 +116,7 @@ def on_successful_turn(game, word, letters, user):
         db_letter.gamer = user.pk
         prepared_letters.append(db_letter.letter_id)
     game.save()
+    game.change_current_player()
     return prepared_letters
 
 

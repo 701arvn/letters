@@ -35,6 +35,7 @@ def game_view(request, session_id):
         'async_url': settings.ASYNC_BACKEND_URL,
         'rows': rows,
         'user_id': request.user.pk,
+        'is_current_player': game.is_current_player(request.user.pk)
     }
     return render(request, 'lpgame/game.html', variables)
 

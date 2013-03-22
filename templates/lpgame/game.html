@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block head %}
     <link href="{{ STATIC_URL }}game.css" rel="stylesheet">
+    <script src="http://malsup.github.com/jquery.blockUI.js"></script>
 {% endblock %}
 {% block content %}
 {% load url from future %}
@@ -37,6 +38,10 @@ $(document).ready(function (){
     var selected = [];
     var token = "{{ csrf_token }}";
     var session_id = "{{ session_id }}"
+    var current_player = "{{ is_current_player }}" == "True"
+    if (!current_player){
+        $('div.container').block({ message: null });
+    }
     $("a.letter").click(function(){
         var $this = $(this);
         var div = $($this.children());
@@ -70,6 +75,7 @@ $(document).ready(function (){
             selected = [];
             $('div.selected').html('');
             $('div.checked').removeClass('checked');
+            $('div.container').block({ message: null }); 
         }).fail(function(data){
             selected = [];
             $('div.selected').html('');
@@ -113,10 +119,14 @@ sock.onmessage = function(e) {
             var user = null;
             if (eventUser == {{ user_id }}){
                 user = 'user1';
+                prev = 'user2';
             }
             else{
                 user = 'user2';
+                prev = 'user1';
+                $('div.container').unblock({ message: null });
             }
+            $('a.letter #letter_'+l_id).removeClass(prev);
             $('a.letter #letter_'+l_id).addClass(user);
         })
     }
