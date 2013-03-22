@@ -39,13 +39,20 @@ $(document).ready(function (){
     var session_id = "{{ session_id }}"
     $("a.letter").click(function(){
         var $this = $(this);
-        var div = $this.children();
+        var div = $($this.children());
         var let_id = div.attr('id').split('_')[1];
+        if (div.hasClass('checked')){
+            var index = selected.indexOf(let_id);
+            selected.splice(index, 1); 
+            div.removeClass('checked')
+            show_word()
+            return false;
+        }
         if (selected.indexOf(let_id) == -1){
             selected.push(let_id);
-            $(div).addClass('checked');
+            div.addClass('checked');
             console.log(selected);
-            $('div.selected').append($(div).clone());
+            show_word()
         }
     });
     $('input#submit').click(function(){
@@ -82,6 +89,12 @@ $(document).ready(function (){
                 dataType: "json"
             })
     });
+    function show_word() {
+        $('div.selected').html('')
+        selected.forEach(function(l_id){
+            $('div.selected').append($("#letter_"+l_id).html().trim())
+        })
+    } 
 });
 var sock = new SockJS('{{ async_url }}/sockjs');
 sock.onopen = function() {
