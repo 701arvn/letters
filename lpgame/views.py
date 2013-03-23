@@ -1,5 +1,6 @@
 import math
 import json
+import logging
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.conf import settings
@@ -7,11 +8,16 @@ from django.http import HttpResponse, Http404
 from base import get_uniq_hash
 from models import *
 
+logger = logging.getLogger('lpgame')
 
 @login_required
 def main_game_view(request):
     session_id = get_uniq_hash(request)
     generate_game(request.user, session_id)
+    logger.info("the game {} has started by {}".format(
+        session_id,
+        request.user.username
+    ))
     return redirect('new_game_view', session_id=session_id)
 
 
@@ -21,6 +27,7 @@ def game_view(request, session_id):
     game = Game.objects.get(session_id=session_id)
     if request.user.pk not in game.gamers:
         if len(game.gamers) == game.MAX_GAMERS:
+            logger.debug("too many gamers in game {}".format(session_id))
             raise Http404
         game.gamers.append(request.user.pk)
         game.save()
@@ -41,30 +48,25 @@ def game_view(request, session_id):
 
 
 def make_turn(request):
-    try:
-        # TODO check if game ended
-        session_id = request.POST.get('session_id')
-        selected_letters = request.POST.getlist('selected[]')
-        letters = [int(entry) for entry in selected_letters]
-        game = Game.objects.get(session_id=session_id)
-        word = ''
-        for letter_id in letters:
-            letter = get_letter_by_id(game, int(letter_id))
-            word += letter.letter
-        print word
-        if EnglishWords.is_a_word(word): # remove this logic from here
-            print "is a word"
-            try:
-                send_event_on_successful_turn(game, word, letters, request.user)
-            except Exception as exc:
-                print exc # TODO add logging
-                # TODO there also could be some error with sending
-                raise Http404("Word already used")
-        else:
-            raise Http404("NOT A WORD")
-    except Exception as exc:
-        print exc
-        raise
+    # TODO check if game ended
+    session_id = request.POST.get('session_id')
+    selected_letters = request.POST.getlist('selected[]')
+    letters = [int(entry) for entry in selected_letters]
+    game = Game.objects.get(session_id=session_id)
+    word = ''
+    for letter_id in letters:
+        letter = get_letter_by_id(game, int(letter_id))
+        word += letter.letter
+    if EnglishWords.is_a_word(word): # remove this logic from here
+        try:
+            send_event_on_successful_turn(game, word, letters, request.user)
+        except Exception as exc:
+            logger.exception('problem in processing turn')
+            # TODO there also could be some error with sending
+            raise Http404("Word already used")
+    else:
+        logger.debug("'{}' is not a word".format(word))
+        raise Http404("NOT A WORD")
     return HttpResponse(json.dumps({'status': 'ok'}), mimetype="application/json")
 
 

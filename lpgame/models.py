@@ -2,10 +2,12 @@ import random
 import string
 import urllib2
 import urllib
+import logging
 from django.conf import settings
 
 from mongoengine import *
 
+logger = logging.getLogger('lpgame')
 
 class EnglishWords(Document):
     WORDS_COUNT = 60388
@@ -116,9 +118,18 @@ def get_letter_by_id(game, letter_id):
 
 def send_event_on_successful_turn(game, word, letters, user):
     letters_to_send = on_successful_turn(game, word, letters, user)
+    logger.debug("{} played word '{}' in game {}".format(
+        user.username,
+        word,
+        game.session_id
+    ))
     send_event('new_turn', letters_to_send, game.session_id, user.pk)
     if game.is_all_letters_played():
         game.end()
+        logger.info("game {} has ended, the winner is {}".format(
+            game.session_id,
+            user.username
+        ))
         send_event('game_over', {'winner': game.winner}, game.session_id)
 
 
