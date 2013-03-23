@@ -42,7 +42,6 @@ class Game(Document):
     def end(self):
         self.ended = True
         self.save()
-        send_event('game_ended', {}, self.session_id)
 
     def is_current_player(self, user_id):
         return user_id == self.current_player
@@ -55,6 +54,22 @@ class Game(Document):
                 self.current_player = gamer
                 break
         self.save()
+
+    def is_all_letters_played(self):
+        counter = 0
+        for letter in self.letters:
+            if letter.gamer is not None:
+                counter += 1
+        return counter == len(self.letters)
+
+    @property
+    def winner(self):
+        if not self.ended:
+            raise Exception("No winner. Game in process")
+        res = {x:0 for x in self.gamers}
+        for letter in self.letters:
+            res[letter.gamer] += 1
+        return max(res.iterkeys(), key=lambda k: res[k])
 
 
 def clean_list(letters):
@@ -97,6 +112,9 @@ def get_letter_by_id(game, letter_id):
 def send_event_on_successful_turn(game, word, letters, user):
     letters_to_send = on_successful_turn(game, word, letters, user)
     send_event('new_turn', letters_to_send, game.session_id, user.pk)
+    if game.is_all_letters_played():
+        game.end()
+        send_event('game_over', {'winner': game.winner}, game.session_id)
 
 
 def on_successful_turn(game, word, letters, user):

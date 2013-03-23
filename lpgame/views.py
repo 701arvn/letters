@@ -72,5 +72,6 @@ def end_game(request):
     session_id = request.POST.get('session_id')
     game = Game.objects.get(session_id=session_id)
     game.end()
+    send_event('game_ended', {}, game.session_id)
     return HttpResponse(json.dumps({'status': 'ok'}), mimetype="application/json")
 
