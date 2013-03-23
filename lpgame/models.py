@@ -38,6 +38,7 @@ class Game(Document):
     letters = ListField(EmbeddedDocumentField(Letter))
     session_id = StringField(max_length=20)
     current_player = IntField()
+    winner_id = IntField()
 
     def end(self):
         self.ended = True
@@ -66,10 +67,14 @@ class Game(Document):
     def winner(self):
         if not self.ended:
             raise Exception("No winner. Game in process")
+        if self.winner_id is not None:
+            return self.winner_id
         res = {x:0 for x in self.gamers}
         for letter in self.letters:
             res[letter.gamer] += 1
-        return max(res.iterkeys(), key=lambda k: res[k])
+        self.winner_id = max(res.iterkeys(), key=lambda k: res[k])
+        self.save()
+        return self.winner_id
 
 
 def clean_list(letters):
