@@ -1,4 +1,7 @@
+# encoding: utf-8
 # Django settings for letterpress project.
+import random
+from mongoengine import connect
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -12,7 +15,6 @@ MANAGERS = ADMINS
 MONGO_DATABASE_NAME = 'letters'
 MONGO_PORT = 27017
 
-from mongoengine import connect
 connect(MONGO_DATABASE_NAME)
 
 DATABASES = {
@@ -123,6 +125,7 @@ INSTALLED_APPS = (
     'mongonaut',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    'social_auth',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -173,6 +176,43 @@ LOGGING = {
     }
 }
 
+AUTHENTICATION_BACKENDS = (
+    'social_auth.backends.twitter.TwitterBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+# Если имя не удалось получить, то можно его сгенерировать
+SOCIAL_AUTH_DEFAULT_USERNAME = lambda: random.choice(['Darth_Vader', 'Obi-Wan_Kenobi', 'R2-D2', 'C-3PO', 'Yoda'])
+# Разрешаем создавать пользователей через social_auth
+SOCIAL_AUTH_CREATE_USERS = True
+
+# Перечислим pipeline, которые последовательно буду обрабатывать респонс 
+SOCIAL_AUTH_PIPELINE = (
+    # Получает по backend и uid инстансы social_user и user
+    'social_auth.backends.pipeline.social.social_auth_user',
+    # Получает по user.email инстанс пользователя и заменяет собой тот, который получили выше.
+    # Кстати, email выдает только Facebook и GitHub, а Vkontakte и Twitter не выдают
+    'social_auth.backends.pipeline.associate.associate_by_email',
+    # Пытается собрать правильный username, на основе уже имеющихся данных
+    'social_auth.backends.pipeline.user.get_username',
+    # Создает нового пользователя, если такого еще нет
+    'social_auth.backends.pipeline.user.create_user',
+    # Пытается связать аккаунты
+    'social_auth.backends.pipeline.social.associate_user',
+    # Получает и обновляет social_user.extra_data
+    'social_auth.backends.pipeline.social.load_extra_data',
+    # Обновляет инстанс user дополнительными данными с бекенда
+    'social_auth.backends.pipeline.user.update_user_details'
+)
+
+TWITTER_CONSUMER_KEY = 'lJ93a5sAeRW3HmwLRGYw'
+TWITTER_CONSUMER_SECRET = 'thIXUqiLS0XYBwV2JmOCVOFwsxtaP6JcfAr4mAEMg'
+
+SOCIAL_AUTH_PROVIDERS = [
+    {'id': p[0], 'name': p[1], 'position': {'width': p[2][0], 'height': p[2][1], }}
+    for p in (
+        ('twitter', u'Login via Twitter', (0, -35)),
+    )
+]
 
 LOGIN_REDIRECT_URL = '/'
 

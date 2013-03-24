@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^mongonaut/', include('mongonaut.urls')),
     url(r'^message/', include('lpmessage.urls')),
     url(r'^game/', include('lpgame.urls')),
+    url(r'', include('social_auth.urls')),
 )
 urlpatterns += staticfiles_urlpatterns()

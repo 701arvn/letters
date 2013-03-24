@@ -3,3 +3,4 @@ django-mongonaut>=0.2.17
 mongoengine>=0.7.9
 sockjs-tornado>=0.0.5
 tornado>=2.4.1
+django-social-auth
