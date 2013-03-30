@@ -35,10 +35,10 @@ class GameTest(MongoTestCase):
         self.assertEqual(len(game.letters), 25)
         return game, word_letters
 
-    def test_on_successful_turn_first_turn(self):
+    def test_on_user_turn_first_turn(self):
         word = 'word'
         game, word_letters = self.add_word_to_db()
-        on_successful_turn(game, word, [l.letter_id for l in word_letters], self.user)
+        on_user_turn(game, word, [l.letter_id for l in word_letters], self.user)
         self.assertIn(word, game.played_words[0].words)
         for word_letter in word_letters:
             self.assertIn(word_letter, game.letters)
@@ -46,13 +46,13 @@ class GameTest(MongoTestCase):
         # tests that you cant use same word twice
         self.assertRaises(
             Exception,
-            on_successful_turn,
+            on_user_turn,
             game, word, [l.letter_id for l in word_letters], self.user
         )
         # tests that other user also cant use this word
         self.assertRaises(
             Exception,
-            on_successful_turn,
+            on_user_turn,
             game, word, [l.letter_id for l in word_letters], self.user2
         )
 

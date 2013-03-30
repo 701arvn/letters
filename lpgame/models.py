@@ -116,8 +116,8 @@ def get_letter_by_id(game, letter_id):
     raise DoesNotExist('No such letter')
 
 
-def send_event_on_successful_turn(game, word, letters, user):
-    letters_to_send = on_successful_turn(game, word, letters, user)
+def send_event_on_user_turn(game, word, letters, user):
+    letters_to_send = on_user_turn(game, word, letters, user)
     logger.debug("{} played word '{}' in game {}".format(
         user.username,
         word,
@@ -133,11 +133,14 @@ def send_event_on_successful_turn(game, word, letters, user):
         send_event('game_over', {'winner': game.winner}, game.session_id)
 
 
-def on_successful_turn(game, word, letters, user):
+def on_user_turn(game, word, letters, user):
     user_words = None
+    if not EnglishWords.is_a_word(word):
+        logger.debug("'{}' is not a word".format(word))
+        raise NotAWordException
     for played_words in game.played_words:
         if word in played_words.words:
-            raise Exception('Word already used')
+            raise WordAlreadyUsedException
         if played_words.gamer == user.pk:
             user_words = played_words
     if user_words is not None:
@@ -162,3 +165,11 @@ def send_event(event_type, event_data, session_id, user=None):
         'user': user
         }
     urllib2.urlopen(settings.ASYNC_BACKEND_URL, urllib.urlencode(to_send))
+
+
+class WordAlreadyUsedException(Exception):
+    pass
+
+
+class NotAWordException(Exception):
+    pass

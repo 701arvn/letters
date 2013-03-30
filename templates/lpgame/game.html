@@ -72,15 +72,17 @@ $(document).ready(function (){
             },
             dataType: "json"
         }).done(function(data){
-            selected = [];
-            $('div.selected').html('');
-            $('div.checked').removeClass('checked');
-            $('div.container').block({ message: null }); 
+            if (data.success){
+                selected = [];
+                $('div.selected').html('');
+                $('div.checked').removeClass('checked');
+                $('div.container').block({ message: null }); 
+            }
+            else{
+                alert(data.error)
+            }
         }).fail(function(data){
-            selected = [];
-            $('div.selected').html('');
-            $('div.checked').removeClass('checked');
-            alert('error');
+            alert('Some server error');
     })
     })
     $('input#end_game').click(function(){

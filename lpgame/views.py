@@ -57,17 +57,26 @@ def make_turn(request):
     for letter_id in letters:
         letter = get_letter_by_id(game, int(letter_id))
         word += letter.letter
-    if EnglishWords.is_a_word(word): # remove this logic from here
-        try:
-            send_event_on_successful_turn(game, word, letters, request.user)
-        except Exception as exc:
-            logger.exception('problem in processing turn')
-            # TODO there also could be some error with sending
-            raise Http404("Word already used")
-    else:
-        logger.debug("'{}' is not a word".format(word))
-        raise Http404("NOT A WORD")
-    return HttpResponse(json.dumps({'status': 'ok'}), mimetype="application/json")
+    try:
+        send_event_on_user_turn(game, word, letters, request.user)
+    except WordAlreadyUsedException:
+        return HttpResponse(
+            json.dumps(
+                {'success': False, 'error': "Word already used", 'code': 1}
+            ),
+            mimetype="application/json"
+        )
+    except NotAWordException:
+        return HttpResponse(
+            json.dumps(
+                {'success': False, 'error': "Not a word", 'code': 2}
+            ),
+            mimetype="application/json"
+        )
+    except Exception as exc:
+        logger.exception('problem in processing turn')
+        raise Http404
+    return HttpResponse(json.dumps({'success': True}), mimetype="application/json")
 
 
 def end_game(request):
@@ -75,5 +84,4 @@ def end_game(request):
     game = Game.objects.get(session_id=session_id)
     game.end()
     send_event('game_ended', {}, game.session_id)
-    return HttpResponse(json.dumps({'status': 'ok'}), mimetype="application/json")
-
+    return HttpResponse(json.dumps({'success': True}), mimetype="application/json")
