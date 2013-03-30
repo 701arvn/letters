@@ -30,7 +30,7 @@ class GameTest(MongoTestCase):
             Letter(letter_id=23, letter='o'),
             Letter(letter_id=24, letter='r'),
             Letter(letter_id=25, letter='d'),
-            ]
+        ]
         game.letters += word_letters
         self.assertEqual(len(game.letters), 25)
         return game, word_letters

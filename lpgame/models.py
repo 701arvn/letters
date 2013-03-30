@@ -9,6 +9,7 @@ from mongoengine import *
 
 logger = logging.getLogger('lpgame')
 
+
 class EnglishWords(Document):
     WORDS_COUNT = 60388
 
@@ -48,7 +49,7 @@ class Game(Document):
 
     def is_current_player(self, user_id):
         return user_id == self.current_player
- 
+
     def change_current_player(self):
         for gamer in self.gamers:
             if self.is_current_player(gamer):
@@ -71,7 +72,7 @@ class Game(Document):
             raise Exception("No winner. Game in process")
         if self.winner_id is not None:
             return self.winner_id
-        res = {x:0 for x in self.gamers}
+        res = {x: 0 for x in self.gamers}
         for letter in self.letters:
             res[letter.gamer] += 1
         self.winner_id = max(res.iterkeys(), key=lambda k: res[k])
@@ -163,7 +164,7 @@ def send_event(event_type, event_data, session_id, user=None):
         'data': event_data,
         'session_id': session_id,
         'user': user
-        }
+    }
     urllib2.urlopen(settings.ASYNC_BACKEND_URL, urllib.urlencode(to_send))
 
 

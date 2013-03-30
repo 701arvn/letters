@@ -10,6 +10,7 @@ from models import *
 
 logger = logging.getLogger('lpgame')
 
+
 @login_required
 def main_game_view(request):
     session_id = get_uniq_hash(request)
