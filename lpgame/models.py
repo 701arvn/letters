@@ -66,6 +66,14 @@ class Game(Document):
                 counter += 1
         return counter == len(self.letters)
 
+    def score(self):
+        result_score = {x: 0 for x in self.gamers}
+        for letter in self.letters:
+            if letter.gamer is None:
+                continue
+            result_score[letter.gamer] += 1
+        return result_score
+
     @property
     def winner(self):
         if not self.ended:
@@ -78,6 +86,10 @@ class Game(Document):
         self.winner_id = max(res.iterkeys(), key=lambda k: res[k])
         self.save()
         return self.winner_id
+
+    @classmethod
+    def get_user_games(cls, user_id, ended=False):
+        return cls.objects(gamers=user_id, ended=ended)
 
 
 def clean_list(letters):

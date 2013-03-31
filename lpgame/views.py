@@ -10,6 +10,13 @@ from models import *
 
 logger = logging.getLogger('lpgame')
 
+@login_required
+def main_page(request):
+    variables = {
+        'active_games': Game.get_user_games(request.user.pk),
+        'ended_games': Game.get_user_games(request.user.pk, ended=True),
+    }
+    return render(request, 'lpgame/main.html', variables)
 
 @login_required
 def main_game_view(request):
