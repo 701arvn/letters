@@ -204,15 +204,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_auth.backends.pipeline.user.update_user_details'
 )
 
-TWITTER_CONSUMER_KEY = 'lJ93a5sAeRW3HmwLRGYw'
-TWITTER_CONSUMER_SECRET = 'thIXUqiLS0XYBwV2JmOCVOFwsxtaP6JcfAr4mAEMg'
-
-SOCIAL_AUTH_PROVIDERS = [
-    {'id': p[0], 'name': p[1], 'position': {'width': p[2][0], 'height': p[2][1], }}
-    for p in (
-        ('twitter', u'Login via Twitter', (0, -35)),
-    )
-]
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
 
 LOGIN_REDIRECT_URL = '/'
 
