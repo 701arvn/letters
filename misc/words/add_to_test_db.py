@@ -1,7 +1,8 @@
 # coding: utf-8
+import os
 from pymongo import MongoClient
 
-connection = MongoClient()
+connection = MongoClient(host=os.environ.get('MONGOHQ_URL', 'localhost'))
 db = connection.test_letters
 words = db.english_words
 words_file = open('2of4brif.txt', 'r')

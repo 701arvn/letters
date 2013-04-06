@@ -207,12 +207,12 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
 
 # These should be overwritten in local_settings or in config vars
-SECRET_KEY = ''
+SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
-ASYNC_BACKEND_URL = ''
+ASYNC_BACKEND_URL = os.environ.get('ASYNC_BACKEND_URL', '')
 
-TWITTER_CONSUMER_KEY = ''
-TWITTER_CONSUMER_SECRET = ''
+TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY', '')
+TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET', '')
 
 
 try:
