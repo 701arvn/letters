@@ -1,8 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
+    <a href="{% url 'lpgame.views.main_game_view' %}">New game</a>
     <ul>
         {% for game in active_games %}
-            <li><span>{{ game.session_id }}</span><span>{{ game.score }}</span></li>
+            <li>
+                <span><a href="{% url 'lpgame.views.game_view' session_id=game.session_id %}">Game</a></span>
+                {% for key, value in game.score.items %}
+                    {{ key }}: {{ value }}
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ul>
+    <ul>
+        {% for game in ended_games %}
+            <li>
+                <span>Game</span>
+                {% for key, value in game.score.items %}
+                    {{ key }}: {{ value }}
+                {% endfor %}
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}
