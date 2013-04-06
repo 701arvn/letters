@@ -36,5 +36,6 @@ def send_event(event_type, event_data, session_id):
         'event': event_type,
         'data': event_data,
         'session_id': session_id,
+        'user': None
     }
     urllib2.urlopen(settings.ASYNC_BACKEND_URL, urllib.urlencode(to_send))
