@@ -15,7 +15,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-MONGO_DATABASE_NAME = 'letters'
+MONGO_DATABASE_NAME = 'letters'  # This isn't used on Heroku
 MONGO_HOST = os.environ.get('MONGOHQ_URL', 'localhost')
 MONGO_PORT = 27017
 connect(MONGO_DATABASE_NAME, host=MONGO_HOST, port=MONGO_PORT)
