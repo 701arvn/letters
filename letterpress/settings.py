@@ -2,8 +2,10 @@
 # Django settings for letterpress project.
 import os
 import random
+import dj_database_url
 from mongoengine import connect
 
+#TODO set DEBUG = False for production
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -14,23 +16,14 @@ ADMINS = (
 MANAGERS = ADMINS
 
 MONGO_DATABASE_NAME = 'letters'
+MONGO_HOST = os.environ.get('MONGOHQ_URL', 'localhost')
 MONGO_PORT = 27017
-
-connect(MONGO_DATABASE_NAME)
+connect(MONGO_DATABASE_NAME, host=MONGO_HOST, port=MONGO_PORT)
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-    #     'NAME': 'dbdb',                      # Or path to database file if using sqlite3.
-    #     'USER': '',                      # Not used with sqlite3.
-    #     'PASSWORD': '',                  # Not used with sqlite3.
-    #     'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-    #     'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    # }
+    # Parse database configuration from $DATABASE_URL
+    'default': dj_database_url.config(),
 }
-# Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] = dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -209,12 +202,18 @@ SOCIAL_AUTH_PIPELINE = (
     'social_auth.backends.pipeline.user.update_user_details'
 )
 
-TWITTER_CONSUMER_KEY = ''
-TWITTER_CONSUMER_SECRET = ''
-
 LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login/'
+
+# These should be overwritten in local_settings or in config vars
+SECRET_KEY = ''
+
+ASYNC_BACKEND_URL = ''
+
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
+
 
 try:
     from local_settings import *
