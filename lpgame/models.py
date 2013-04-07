@@ -1,9 +1,7 @@
 import random
 import string
-import urllib2
-import urllib
 import logging
-from django.conf import settings
+from base import send_event
 
 from mongoengine import *
 
@@ -174,16 +172,6 @@ def on_user_turn(game, word, letters, user):
     game.save()
     game.change_current_player()
     return prepared_letters
-
-
-def send_event(event_type, event_data, session_id, user=None):
-    to_send = {
-        'event': event_type,
-        'data': event_data,
-        'session_id': session_id,
-        'user': user
-    }
-    urllib2.urlopen(settings.ASYNC_BACKEND_URL, urllib.urlencode(to_send))
 
 
 class WordAlreadyUsedException(Exception):

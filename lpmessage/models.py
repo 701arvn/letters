@@ -1,9 +1,7 @@
+import json
 from django.db import models
 from django.contrib.auth.models import User
-from django.conf import settings
-import urllib2
-import urllib
-import json
+from base import send_event
 
 
 class Message(models.Model):
@@ -29,13 +27,3 @@ class Message(models.Model):
     def save(self, *args, **kwargs):
         super(Message, self).save(*args, **kwargs)
         send_event('message-create', self.as_dict(), self.session_id)
-
-
-def send_event(event_type, event_data, session_id):
-    to_send = {
-        'event': event_type,
-        'data': event_data,
-        'session_id': session_id,
-        'user': None
-    }
-    urllib2.urlopen(settings.ASYNC_BACKEND_URL, urllib.urlencode(to_send))

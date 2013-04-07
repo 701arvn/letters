@@ -1,3 +1,5 @@
+import urllib
+import urllib2
 from hashlib import md5
 from datetime import datetime
 from django.test import TestCase
@@ -7,6 +9,16 @@ from django.conf import settings
 def get_uniq_hash(request):
     uniq_hash = md5(str(datetime.now()) + request.user.username).hexdigest()[:7]
     return uniq_hash
+
+
+def send_event(event_type, event_data, session_id, user=None):
+    to_send = {
+        'event': event_type,
+        'data': event_data,
+        'session_id': session_id,
+        'user': user
+    }
+    urllib2.urlopen(settings.ASYNC_BACKEND_URL, urllib.urlencode(to_send))
 
 
 class MongoTestCase(TestCase):
