@@ -5,9 +5,10 @@ import random
 import dj_database_url
 from mongoengine import connect
 
-#TODO set DEBUG = False for production
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+ALLOWED_HOSTS = ['*']
 
 ADMINS = (
     ('Evgeny Tataurov', 'tatauroff@gmail.com'),
