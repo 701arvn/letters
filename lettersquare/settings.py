@@ -1,5 +1,5 @@
 # encoding: utf-8
-# Django settings for letterpress project.
+# Django settings for lettersquare project.
 import os
 import random
 import dj_database_url
@@ -103,10 +103,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'letterpress.urls'
+ROOT_URLCONF = 'lettersquare.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'letterpress.wsgi.application'
+WSGI_APPLICATION = 'lettersquare.wsgi.application'
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_DIR, 'templates'),

@@ -1,1 +1,1 @@
-web: python manage.py collectstatic --noinput; gunicorn letterpress.wsgi
+web: python manage.py collectstatic --noinput; gunicorn lettersquare.wsgi

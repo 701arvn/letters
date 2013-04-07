@@ -1,5 +1,5 @@
 *.pyc
-letterpress/local_settings.py
+lettersquare/local_settings.py
 dbdb
 .DS_Store
 .idea
