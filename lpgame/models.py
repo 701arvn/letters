@@ -74,6 +74,12 @@ class Game(Document):
             result_score[letter.gamer] += 1
         return result_score
 
+    def new_player(self, user_id):
+        self.gamers.append(user_id)
+        self.save()
+        if len(self.gamers) == self.MAX_GAMERS:
+            send_event('game_ready', {}, self.session_id)
+
     @property
     def winner(self):
         if not self.ended:
@@ -143,7 +149,7 @@ def send_event_on_user_turn(game, word, letters, user):
             game.session_id,
             user.username
         ))
-        send_event('game_over', {'winner': game.winner}, game.session_id)
+        send_event('game_over', {'winner': game.winner}, game.session_id)  # TODO handle it in js
 
 
 def on_user_turn(game, word, letters, user):

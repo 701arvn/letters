@@ -36,9 +36,8 @@ def game_view(request, session_id):
     if request.user.pk not in game.gamers:
         if len(game.gamers) == game.MAX_GAMERS:
             logger.debug("too many gamers in game {}".format(session_id))
-            raise Http404
-        game.gamers.append(request.user.pk)
-        game.save()
+            raise Http404  # TODO more specific error
+        game.new_player(request.user.pk)
     letters = game.letters
     rows_count = int(math.sqrt(len(letters)))
     rows = []
@@ -46,6 +45,7 @@ def game_view(request, session_id):
         rows.append(letters[i * rows_count: i * rows_count + rows_count])
 
     variables = {
+        'ready': len(game.gamers) == game.MAX_GAMERS,
         'session_id': session_id,
         'async_url': settings.ASYNC_BACKEND_URL,
         'rows': rows,

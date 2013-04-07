@@ -36,9 +36,10 @@
 $(document).ready(function (){
     var selected = [];
     var token = "{{ csrf_token }}";
-    var session_id = "{{ session_id }}"
-    var current_player = "{{ is_current_player }}" == "True"
-    if (!current_player){
+    var session_id = "{{ session_id }}";
+    var current_player = "{{ is_current_player }}" === "True";
+    var game_ready = "{{ ready }}" === "True";
+    if (!current_player || !game_ready){
         $('div.container').block({ message: null });
     }
     $("a.letter").click(function(){
@@ -130,6 +131,9 @@ sock.onmessage = function(e) {
             $('a.letter #letter_'+l_id).removeClass(prev);
             $('a.letter #letter_'+l_id).addClass(user);
         })
+    }
+    else if (eventType == 'game_ready'){
+        $('div.container').unblock({ message: null });
     }
 };
 sock.onclose = function() {
