@@ -121,7 +121,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'lpmessage',
     'lpgame',
-    'mongonaut',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     'social_auth',
