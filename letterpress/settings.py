@@ -5,10 +5,10 @@ import random
 import dj_database_url
 from mongoengine import connect
 
-DEBUG = False
+DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.herokuapp.com']
 
 ADMINS = (
     ('Evgeny Tataurov', 'tatauroff@gmail.com'),
