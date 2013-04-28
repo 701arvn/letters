@@ -5,32 +5,34 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-    <div class="nanana">
-    {% for letters in rows %}
-        <div class="row-fluid show-grid">
-        {% for entry in letters %}
-            <a href="#" class="letter">
-            {% if entry.gamer %}
-                {% if entry.gamer == user_id %}
-                    <div class="span1 user1" id="letter_{{ entry.letter_id }}">
+    <div class="game-field">
+        <div class="letters-space">
+        {% for letters in rows %}
+            <div class="row-fluid show-grid">
+            {% for entry in letters %}
+                <a href="#" class="letter">
+                {% if entry.gamer %}
+                    {% if entry.gamer == user_id %}
+                        <div class="span1 user1" id="letter_{{ entry.letter_id }}">
+                    {% else %}
+                        <div class="span1 user2" id="letter_{{ entry.letter_id }}">
+                    {% endif %}
                 {% else %}
-                    <div class="span1 user2" id="letter_{{ entry.letter_id }}">
+                    <div class="span1" id="letter_{{ entry.letter_id }}">
                 {% endif %}
-            {% else %}
-                <div class="span1" id="letter_{{ entry.letter_id }}">
-            {% endif %}
-                    {{ entry.letter }}
-                </div>
-            </a>
+                        {{ entry.letter }}
+                    </div>
+                </a>
+            {% endfor %}
+            </div>
         {% endfor %}
         </div>
-    {% endfor %}
+        <div class="selected row-fluid show-grid">
+        </div>
+        <br/>
+        <input type="button" id="submit" value="Submit" class="btn"/>
+        <input type="button" id="end_game" value="End game" class="btn"/>
     </div>
-    <div class="selected">
-    </div>
-    <br/>
-    <input type="button" id="submit" value="Submit" class="btn"/>
-    <input type="button" id="end_game" value="End game" class="btn"/>
 </div>
 <script type="text/javascript">
 $(document).ready(function (){

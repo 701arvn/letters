@@ -1,15 +1,32 @@
-.user1 {
-    background-color: blue;
-}
-.user2 {
-    background-color: red;
-}
-.span1{
+.show-grid .span1 {
+    background-color: #eee;
     text-align: center;
+    /*-webkit-border-radius: 3px;*/
+    /*-moz-border-radius: 3px;*/
+    /*border-radius: 3px;*/
+    min-height: 70px;
+    min-width: 70px;
+    line-height: 70px;
+    height: 70px;
+    font-size: 20px;
+}
+.show-grid .span1:hover {
+    background-color: #ddd;
+}
+.show-grid .user1 {
+    background-color: #0044cc;
+}
+.show-grid .user2 {
+    background-color: red;
 }
 a.letter{
     color: black;
 }
-.checked {
+.show-grid .checked {
     background-color: gray;
+}
+.game-field {
+    padding: 19px 29px 29px;
+    margin: auto;
+    max-width: 400px;
 }

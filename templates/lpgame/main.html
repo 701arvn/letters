@@ -1,24 +1,89 @@
 {% extends 'base.html' %}
+{% block head %}
+    <style type="text/css">
+        body {
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+            /* Custom container */
+        .container-narrow {
+            margin: 0 auto;
+            max-width: 700px;
+        }
+        .container-narrow > hr {
+            margin: 30px 0;
+        }
+
+            /* Main marketing message and sign up button */
+        .jumbotron {
+            margin: 60px 0;
+            text-align: center;
+        }
+        .jumbotron h1 {
+            font-size: 72px;
+            line-height: 1;
+        }
+        .jumbotron .btn {
+            font-size: 21px;
+            padding: 14px 24px;
+        }
+
+            /* Supporting marketing content */
+        .marketing {
+            margin: 60px 0;
+        }
+        .marketing p + h4 {
+            margin-top: 28px;
+        }
+    </style>
+{% endblock %}
 {% block content %}
-    <a href="{% url 'lpgame.views.main_game_view' %}">New game</a>
-    <ul>
-        {% for game in active_games %}
-            <li>
-                <span><a href="{% url 'lpgame.views.game_view' session_id=game.session_id %}">Game</a></span>
-                {% for key, value in game.score.items %}
-                    {{ key }}: {{ value }}
+    <div class="container-narrow">
+
+        <div class="masthead">
+            <ul class="nav nav-pills pull-right">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+            <h3 class="muted">Lettersquare</h3>
+        </div>
+
+        <hr>
+
+        <div class="jumbotron">
+{#            <h1>Win this game, man!</h1>#}
+            <a class="btn btn-large btn-success" href="{% url 'lpgame.views.main_game_view' %}">New game</a>
+        </div>
+
+        <hr>
+
+        <div class="row-fluid marketing">
+            <div class="span6">
+                {% for game in active_games %}
+                    <h4><a href="{% url 'lpgame.views.game_view' session_id=game.session_id %}">Game</a></h4>
+                    <p>
+                        {% for key, value in game.score.items %}
+                            {{ key }}: {{ value }}
+                        {% endfor %}
+                    </p>
                 {% endfor %}
-            </li>
-        {% endfor %}
-    </ul>
-    <ul>
-        {% for game in ended_games %}
-            <li>
-                <span>Game</span>
-                {% for key, value in game.score.items %}
-                    {{ key }}: {{ value }}
+            </div>
+
+            <div class="span6">
+                {% for game in ended_games %}
+                    <h4>Game</h4>
+                    <p>
+                        {% for key, value in game.score.items %}
+                            {{ key }}: {{ value }}
+                        {% endfor %}
+                    </p>
                 {% endfor %}
-            </li>
-        {% endfor %}
-    </ul>
+            </div>
+        </div>
+
+        <hr>
+
+
+    </div>
 {% endblock %}
