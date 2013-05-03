@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
-{% block head %}
+{% extends 'lpgame/game_base.html' %}
+{% block subhead %}
     <link href="{{ STATIC_URL }}game.css" rel="stylesheet">
     <script src="http://malsup.github.com/jquery.blockUI.js"></script>
 {% endblock %}
-{% block content %}
-<div class="container">
+{% block subcontent %}
+<div class="game-container">
     <div class="game-field">
         <div class="letters-space">
         {% for letters in rows %}
@@ -43,7 +43,7 @@ $(document).ready(function (){
     var current_player = "{{ is_current_player }}" === "True";
     var game_ready = "{{ ready }}" === "True";
     if (!current_player || !game_ready){
-        $('div.container').block({ message: null });
+        $('div.game-container').block({ message: null });
     }
     $("a.letter").click(function(){
         var $this = $(this);
@@ -84,7 +84,7 @@ $(document).ready(function (){
                 $('div.selected').html('');
                 $('div.checked').removeClass('checked');
                 $('#reset_selected').hide()
-                $('div.container').block({ message: null }); 
+                $('div.game-container').block({ message: null }); 
             }
             else{
                 alert(data.error)
@@ -139,14 +139,14 @@ sock.onmessage = function(e) {
             else{
                 user = 'user2';
                 prev = 'user1';
-                $('div.container').unblock({ message: null });
+                $('div.game-container').unblock({ message: null });
             }
             $('a.letter #letter_'+l_id).removeClass(prev);
             $('a.letter #letter_'+l_id).addClass(user);
         })
     }
     else if (eventType == 'game_ready'){
-        $('div.container').unblock({ message: null });
+        $('div.game-container').unblock({ message: null });
     }
 };
 sock.onclose = function() {
