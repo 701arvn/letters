@@ -31,8 +31,9 @@ def main_game_view(request):
 
 @login_required
 def game_view(request, session_id):
-    # TODO check if game ended
     game = Game.objects.get(session_id=session_id)
+    if game.ended:
+        raise Http404
     if request.user.pk not in game.gamers:
         if len(game.gamers) == game.MAX_GAMERS:
             logger.debug("too many gamers in game {}".format(session_id))
@@ -56,7 +57,7 @@ def game_view(request, session_id):
 
 
 def make_turn(request):
-    # TODO check if game ended
+    # TODO some security
     session_id = request.POST.get('session_id')
     selected_letters = request.POST.getlist('selected[]')
     letters = [int(entry) for entry in selected_letters]
