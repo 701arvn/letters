@@ -32,6 +32,7 @@
         <br/>
         <input type="button" id="submit" value="Submit" class="btn"/>
         <input type="button" id="end_game" value="End game" class="btn"/>
+        <input type="button" id="reset_selected" value="Reset selected" class="btn" style="display: none;"/>
     </div>
 </div>
 <script type="text/javascript">
@@ -42,7 +43,7 @@ $(document).ready(function (){
     var current_player = "{{ is_current_player }}" === "True";
     var game_ready = "{{ ready }}" === "True";
     if (!current_player || !game_ready){
-        $('div.container').block({ message: null });
+        $('div.container').block({ message: null });
     }
     $("a.letter").click(function(){
         var $this = $(this);
@@ -51,15 +52,19 @@ $(document).ready(function (){
         if (div.hasClass('checked')){
             var index = selected.indexOf(let_id);
             selected.splice(index, 1); 
-            div.removeClass('checked')
-            show_word()
+            div.removeClass('checked');
+            show_word();
+            if (!selected.length){
+                $('#reset_selected').hide()
+            }
             return false;
         }
         if (selected.indexOf(let_id) == -1){
             selected.push(let_id);
             div.addClass('checked');
             console.log(selected);
-            show_word()
+            show_word();
+            $('#reset_selected').show()
         }
     });
     $('input#submit').click(function(){
@@ -78,6 +83,7 @@ $(document).ready(function (){
                 selected = [];
                 $('div.selected').html('');
                 $('div.checked').removeClass('checked');
+                $('#reset_selected').hide()
                 $('div.container').block({ message: null }); 
             }
             else{
@@ -99,6 +105,11 @@ $(document).ready(function (){
                 dataType: "json"
             })
     });
+    $('input#reset_selected').click(function(){
+        selected = [];
+        $('div.checked').removeClass('checked');
+        show_word();
+    })
     function show_word() {
         $('div.selected').html('')
         selected.forEach(function(l_id){

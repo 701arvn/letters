@@ -28,5 +28,8 @@ a.letter{
 .game-field {
     padding: 19px 29px 29px;
     margin: auto;
-    max-width: 400px;
+    max-width: 350px;
+}
+.letters-space {
+    width: 350px;
 }
