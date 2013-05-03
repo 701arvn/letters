@@ -1,4 +1,5 @@
 {% extends 'lpgame/game_base.html' %}
+{% load game_tags %}
 {% block subcontent %}
         <div class="jumbotron">
 {#            <h1>Win this game, man!</h1>#}
@@ -11,22 +12,18 @@
             <div class="span6">
                 {% for game in active_games %}
                     <h4><a href="{% url 'lpgame.views.game_view' session_id=game.session_id %}">Game</a></h4>
-                    <p>
-                        {% for key, value in game.score.items %}
-                            {{ key }}: {{ value }}
-                        {% endfor %}
-                    </p>
+                    <div class="score">
+                        {% game_score %}
+                    </div>
                 {% endfor %}
             </div>
 
             <div class="span6">
                 {% for game in ended_games %}
                     <h4>Game</h4>
-                    <p>
-                        {% for key, value in game.score.items %}
-                            {{ key }}: {{ value }}
-                        {% endfor %}
-                    </p>
+                    <div class="score">
+                        {% game_score %}
+                    </div>
                 {% endfor %}
             </div>
         </div>
