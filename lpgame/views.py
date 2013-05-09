@@ -15,6 +15,7 @@ def main_page(request):
     variables = {
         'active_games': Game.get_user_games(request.user.pk),
         'ended_games': Game.get_user_games(request.user.pk, ended=True),
+        'user_id': request.user.pk,
     }
     return render(request, 'lpgame/main.html', variables)
 

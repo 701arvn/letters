@@ -12,6 +12,9 @@
             <div class="span6">
                 {% for game in active_games %}
                     <h4><a href="{% url 'lpgame.views.game_view' session_id=game.session_id %}">{% game_users %}</a></h4>
+                    {% if game.current_player == user_id %}
+                        <span class="label label-info">Your turn!</span>
+                    {% endif %}
                     <div class="score">
                         {% game_score %}
                     </div>
