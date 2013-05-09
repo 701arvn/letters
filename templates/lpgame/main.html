@@ -11,7 +11,7 @@
         <div class="row-fluid marketing">
             <div class="span6">
                 {% for game in active_games %}
-                    <h4><a href="{% url 'lpgame.views.game_view' session_id=game.session_id %}">Game</a></h4>
+                    <h4><a href="{% url 'lpgame.views.game_view' session_id=game.session_id %}">{% game_users %}</a></h4>
                     <div class="score">
                         {% game_score %}
                     </div>
@@ -20,7 +20,7 @@
 
             <div class="span6">
                 {% for game in ended_games %}
-                    <h4>Game</h4>
+                    <h4>{% game_users %}</h4>
                     <div class="score">
                         {% game_score %}
                     </div>
