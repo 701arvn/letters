@@ -1,5 +1,6 @@
 import urllib
 import urllib2
+import json
 from hashlib import md5
 from datetime import datetime
 from django.test import TestCase
@@ -12,6 +13,8 @@ def get_uniq_hash(request):
 
 
 def send_event(event_type, event_data, session_id, user=None):
+    if isinstance(event_data, dict):
+        event_data = json.dumps(event_data)
     to_send = {
         'event': event_type,
         'data': event_data,

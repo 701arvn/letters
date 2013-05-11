@@ -62,7 +62,6 @@ $(document).ready(function (){
         if (selected.indexOf(let_id) == -1){
             selected.push(let_id);
             div.addClass('checked');
-            console.log(selected);
             show_word();
             $('#reset_selected').show()
         }
@@ -126,9 +125,9 @@ function new_connection(){
     sock.onmessage = function(e) {
         var eventType = e.data.event;
         if (eventType == 'new_turn'){
-            var eventLetters = JSON.parse(e.data.data);
+            var eventData = JSON.parse(e.data.data);
             var eventUser = e.data.user;
-            eventLetters.forEach(function(l_id){
+            eventData.letters.forEach(function(l_id){
                 var user = null;
                 if (eventUser == {{ user_id }}){
                     user = 'user1';

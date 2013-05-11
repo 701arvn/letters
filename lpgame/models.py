@@ -140,14 +140,20 @@ def send_event_on_user_turn(game, word, letters, user):
         word,
         game.session_id
     ))
-    send_event('new_turn', letters_to_send, game.session_id, user.pk)
+    data = {
+        'letters': letters_to_send,
+        'score': game.score(),
+        'word': word
+    }
+    send_event('new_turn', data, game.session_id, user.pk)
     if game.is_all_letters_played():
         game.end()
         logger.info("game {} has ended, the winner is {}".format(
             game.session_id,
             user.username
         ))
-        send_event('game_over', {'winner': game.winner}, game.session_id)  # TODO handle it in js
+        data['winner'] = game.winner
+        send_event('game_over', data, game.session_id)  # TODO handle it in js
 
 
 def on_user_turn(game, word, letters, user):
