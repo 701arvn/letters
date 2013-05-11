@@ -115,48 +115,48 @@ $(document).ready(function (){
         selected.forEach(function(l_id){
             $('div.selected').append($("#letter_"+l_id).html().trim())
         })
-    } 
+    }
+    new_connection();
 });
-var sock = new SockJS('{{ async_url }}/sockjs');
-sock.onopen = function() {
-    console.log('open');
-    send_session_id()
-};
-sock.onmessage = function(e) {
-    console.log(e)
-    var eventType = e.data.event;
-    console.log(e.data)
-    if (eventType == 'new_turn'){
-        var eventLetters = JSON.parse(e.data.data);
-        var eventUser = e.data.user;
-        eventLetters.forEach(function(l_id){
-            console.log(l_id);
-            var user = null;
-            if (eventUser == {{ user_id }}){
-                user = 'user1';
-                prev = 'user2';
-            }
-            else{
-                user = 'user2';
-                prev = 'user1';
-                $('div.game-container').unblock({ message: null });
-            }
-            $('a.letter #letter_'+l_id).removeClass(prev);
-            $('a.letter #letter_'+l_id).addClass(user);
-        })
+function new_connection(){
+    var sock = new SockJS('{{ async_url }}/sockjs');
+    sock.onopen = function() {
+        send_session_id()
+    };
+    sock.onmessage = function(e) {
+        var eventType = e.data.event;
+        if (eventType == 'new_turn'){
+            var eventLetters = JSON.parse(e.data.data);
+            var eventUser = e.data.user;
+            eventLetters.forEach(function(l_id){
+                var user = null;
+                if (eventUser == {{ user_id }}){
+                    user = 'user1';
+                    prev = 'user2';
+                }
+                else{
+                    user = 'user2';
+                    prev = 'user1';
+                    $('div.game-container').unblock({ message: null });
+                }
+                $('a.letter #letter_'+l_id).removeClass(prev);
+                $('a.letter #letter_'+l_id).addClass(user);
+            })
+        }
+        else if (eventType == 'game_ready'){
+            $('div.game-container').unblock({ message: null });
+        }
+    };
+    sock.onclose = function() {
+        setTimeout('new_connection()', 5000);
+        //TODO get latest data
+    };
+    function send_session_id() {
+        sock.send(JSON.stringify({
+            event: "init",
+            session_id: "{{ session_id }}"
+        }))
     }
-    else if (eventType == 'game_ready'){
-        $('div.game-container').unblock({ message: null });
-    }
-};
-sock.onclose = function() {
-    console.log('close');
-};
-function send_session_id() {
-    sock.send(JSON.stringify({
-        event: "init",
-        session_id: "{{ session_id }}"
-    }))
-};
+}
 </script>
 {% endblock %}
