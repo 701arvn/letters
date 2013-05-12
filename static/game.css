@@ -26,10 +26,22 @@ a.letter{
     background-color: gray;
 }
 .game-field {
-    padding: 19px 29px 29px;
     margin: auto;
     max-width: 350px;
 }
 .letters-space {
     width: 350px;
+}
+.score {
+    display: inline;
+    font-size: 20px;
+    font-weight: bold;
+}
+.user {
+    display: inline;
+}
+.game_score {
+    margin: auto;
+    text-align: center;
+    padding-bottom: 5px;
 }

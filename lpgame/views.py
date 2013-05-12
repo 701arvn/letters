@@ -47,9 +47,11 @@ def game_view(request, session_id):
         rows.append(letters[i * rows_count: i * rows_count + rows_count])
 
     variables = {
+        'game': game,
         'ready': len(game.gamers) == game.MAX_GAMERS,
         'session_id': session_id,
         'async_url': settings.ASYNC_BACKEND_URL,
+        'debug': settings.DEBUG,
         'rows': rows,
         'user_id': request.user.pk,
         'is_current_player': game.is_current_player(request.user.pk)

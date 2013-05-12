@@ -3,9 +3,11 @@
     <link href="{{ STATIC_URL }}game.css" rel="stylesheet">
     <script src="http://malsup.github.com/jquery.blockUI.js"></script>
 {% endblock %}
+{% load game_tags %}
 {% block subcontent %}
 <div class="game-container">
     <div class="game-field">
+        <div class="game_score">{% current_score %}</div>
         <div class="letters-space">
         {% for letters in rows %}
             <div class="row-fluid show-grid">
@@ -120,10 +122,16 @@ $(document).ready(function (){
 function new_connection(){
     var sock = new SockJS('{{ async_url }}/sockjs');
     sock.onopen = function() {
+        {% if debug %}
+            console.log('open');
+        {% endif %}
         send_session_id()
     };
     sock.onmessage = function(e) {
         var eventType = e.data.event;
+        {% if debug %}
+            console.log(e.data);
+        {% endif %}
         if (eventType == 'new_turn'){
             var eventData = JSON.parse(e.data.data);
             var eventUser = e.data.user;
@@ -141,12 +149,23 @@ function new_connection(){
                 $('a.letter #letter_'+l_id).removeClass(prev);
                 $('a.letter #letter_'+l_id).addClass(user);
             })
+            for (user in eventData.score){
+                if (user == {{ user_id }}){
+                    $('#score_user1').html(eventData.score[user]);
+                }
+                else{
+                    $('#score_user2').html(eventData.score[user]);
+                }
+            }
         }
         else if (eventType == 'game_ready'){
             $('div.game-container').unblock({ message: null });
         }
     };
     sock.onclose = function() {
+        {% if debug %}
+            console.log('closed');
+        {% endif %}
         setTimeout('new_connection()', 5000);
         //TODO get latest data
     };
