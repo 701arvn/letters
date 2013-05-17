@@ -6,6 +6,7 @@
 {% load game_tags %}
 {% block subcontent %}
 <div class="game-container">
+    <div class="alert alert-info" id="game_info" style="display: none;"></div>
     <div class="game-field">
         <div class="game_score">{% current_score %}</div>
         <div class="letters-space">
@@ -38,12 +39,12 @@
     </div>
 </div>
 <script type="text/javascript">
+var selected = [];
+var token = "{{ csrf_token }}";
+var session_id = "{{ session_id }}";
+var current_player = "{{ is_current_player }}" === "True";
+var game_ready = "{{ ready }}" === "True";
 $(document).ready(function (){
-    var selected = [];
-    var token = "{{ csrf_token }}";
-    var session_id = "{{ session_id }}";
-    var current_player = "{{ is_current_player }}" === "True";
-    var game_ready = "{{ ready }}" === "True";
     if (!current_player || !game_ready){
         $('div.game-container').block({ message: null });
     }
@@ -111,14 +112,31 @@ $(document).ready(function (){
         $('div.checked').removeClass('checked');
         show_word();
     })
-    function show_word() {
-        $('div.selected').html('')
-        selected.forEach(function(l_id){
-            $('div.selected').append($("#letter_"+l_id).html().trim())
-        })
-    }
     new_connection();
 });
+function show_word() {
+    $('div.selected').html('')
+    selected.forEach(function(l_id){
+        $('div.selected').append($("#letter_"+l_id).html().trim())
+    })
+}
+function get_player_name(user_id){
+    if (user_id == {{ user_id }}){
+        return $('#name_user1').html();
+    }
+    else{
+        return $('#name_user2').html();
+    }
+}
+function show_info(user, data){
+    var username = get_player_name(user);
+    var text = username + " played word " + data.word;
+    var info_div = $('#game_info');
+    info_div.html(text);
+    info_div.show('slow');
+    setTimeout("$('#game_info').hide('slow')", 20000);
+
+}
 function new_connection(){
     var sock = new SockJS('{{ async_url }}/sockjs');
     sock.onopen = function() {
@@ -142,6 +160,7 @@ function new_connection(){
                     prev = 'user2';
                 }
                 else{
+                    show_info(eventUser, eventData);
                     user = 'user2';
                     prev = 'user1';
                     $('div.game-container').unblock({ message: null });
