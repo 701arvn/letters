@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-18 14:33+0600\n"
+"POT-Creation-Date: 2013-05-18 20:01+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,20 +19,23 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: templates/lpgame/game.html:11
+msgid "Waiting for other player's turn"
+msgstr "Ожидание хода другого игрока"
 
-#: templates/lpgame/game.html:37
+#: templates/lpgame/game.html:38
 msgid "Submit"
 msgstr "Отправить"
 
-#: templates/lpgame/game.html:38
+#: templates/lpgame/game.html:39
 msgid "End game"
 msgstr "Закончить игру"
 
-#: templates/lpgame/game.html:39
+#: templates/lpgame/game.html:40
 msgid "Reset selected"
 msgstr "Сбросить"
 
-#: templates/lpgame/game.html:134
+#: templates/lpgame/game.html:137
 msgid "played word"
 msgstr "сыграл слово"
 
@@ -52,22 +55,22 @@ msgstr "Новая игра"
 msgid "Your turn!"
 msgstr "Твой ход!"
 
-#: templates/registration/login.html:46
+#: templates/registration/login.html:47
 msgid "Your username and password didn't match. Please try again."
 msgstr "Ввведен неверный логин или пароль. Попробуйте еще раз"
 
-#: templates/registration/login.html:50
+#: templates/registration/login.html:51
 msgid "Please sign in"
 msgstr "Пожалуйста войдите"
 
-#: templates/registration/login.html:51
+#: templates/registration/login.html:52
 msgid "Username"
 msgstr "Имя пользователя"
 
-#: templates/registration/login.html:52
+#: templates/registration/login.html:53
 msgid "Password"
 msgstr "Пароль"
 
-#: templates/registration/login.html:53
+#: templates/registration/login.html:54
 msgid "Sign in"
 msgstr "Войти"

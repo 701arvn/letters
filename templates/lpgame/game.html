@@ -1,13 +1,13 @@
 {% extends 'lpgame/game_base.html' %}
 {% block subhead %}
     <link href="{{ STATIC_URL }}game.css" rel="stylesheet">
-    <script src="http://malsup.github.com/jquery.blockUI.js"></script>
 {% endblock %}
 {% load i18n %}
 {% load game_tags %}
 {% block subcontent %}
 <div class="game-container">
     <div class="alert alert-info" id="game_info" style="display: none;"></div>
+    <div class="alert alert-success" id="turn_info" style="display: none;">{% trans "Waiting for other player's turn" %}</div>
     <div class="game-field">
         <div class="game_score">{% current_score %}</div>
         <div class="letters-space">
@@ -47,7 +47,8 @@ var current_player = "{{ is_current_player }}" === "True";
 var game_ready = "{{ ready }}" === "True";
 $(document).ready(function (){
     if (!current_player || !game_ready){
-        $('div.game-container').block({ message: null });
+        $('#submit').prop('disabled', true)
+        if (!current_player) $("#turn_info").show();
     }
     $("a.letter").click(function(){
         var $this = $(this);
@@ -86,8 +87,9 @@ $(document).ready(function (){
                 selected = [];
                 $('div.selected').html('');
                 $('div.checked').removeClass('checked');
-                $('#reset_selected').hide()
-                $('div.game-container').block({ message: null }); 
+                $('#reset_selected').hide();
+                $('#submit').prop('disabled', true);
+                $("#turn_info").show();
             }
             else{
                 alert(data.error)
@@ -161,10 +163,8 @@ function new_connection(){
                     prev = 'user2';
                 }
                 else{
-                    show_info(eventUser, eventData);
                     user = 'user2';
                     prev = 'user1';
-                    $('div.game-container').unblock({ message: null });
                 }
                 $('a.letter #letter_'+l_id).removeClass(prev);
                 $('a.letter #letter_'+l_id).addClass(user);
@@ -177,9 +177,14 @@ function new_connection(){
                     $('#score_user2').html(eventData.score[user]);
                 }
             }
+            if (eventUser != {{ user_id }}){
+                show_info(eventUser, eventData);
+                $('#submit').prop('disabled', false)
+                $("#turn_info").hide();
+            }
         }
         else if (eventType == 'game_ready'){
-            $('div.game-container').unblock({ message: null });
+            $('#submit').prop('disabled', false)
         }
     };
     sock.onclose = function() {
