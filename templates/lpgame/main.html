@@ -1,9 +1,10 @@
 {% extends 'lpgame/game_base.html' %}
+{% load i18n %}
 {% load game_tags %}
 {% block subcontent %}
         <div class="jumbotron">
 {#            <h1>Win this game, man!</h1>#}
-            <a class="btn btn-large btn-success" href="{% url 'lpgame.views.main_game_view' %}">New game</a>
+            <a class="btn btn-large btn-success" href="{% url 'lpgame.views.main_game_view' %}">{% trans "New game" %}</a>
         </div>
 
         <hr>
@@ -13,7 +14,7 @@
                 {% for game in active_games %}
                     <h4><a href="{% url 'lpgame.views.game_view' session_id=game.session_id %}">{% game_users %}</a></h4>
                     {% if game.current_player == user_id %}
-                        <span class="label label-info">Your turn!</span>
+                        <span class="label label-info">{% trans "Your turn!"%}</span>
                     {% endif %}
                     <div class="score">
                         {% game_score %}

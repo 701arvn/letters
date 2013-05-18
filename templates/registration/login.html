@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block head %}
     <style type="text/css" xmlns="http://www.w3.org/1999/html">
         body {
@@ -43,14 +44,14 @@
 <div class="container">
 
     {% if form.errors %}
-        <div class="alert alert-error">Your username and password didn't match. Please try again.</div>
+        <div class="alert alert-error">{% trans "Your username and password didn't match. Please try again." %}</div>
     {% endif %}
 
     <form class="form-signin" method="post" action="{% url "django.contrib.auth.views.login" %}">{% csrf_token %}
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="input-block-level" placeholder="Username" name="username">
-        <input type="password" class="input-block-level" placeholder="Password" name="password">
-        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+        <h2 class="form-signin-heading">{% trans "Please sign in" %}</h2>
+        <input type="text" class="input-block-level" placeholder="{% trans 'Username' %}" name="username">
+        <input type="password" class="input-block-level" placeholder="{% trans 'Password' %}" name="password">
+        <button class="btn btn-large btn-primary" type="submit">{% trans "Sign in" %}</button>
         <input type="hidden" name="next" value="{{ next }}" />
         <div class="tw_login">
             <a href="/login/twitter/"><img src="{{ STATIC_URL }}sign-in-with-twitter-gray.png"></a>

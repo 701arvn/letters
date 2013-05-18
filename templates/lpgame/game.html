@@ -3,6 +3,7 @@
     <link href="{{ STATIC_URL }}game.css" rel="stylesheet">
     <script src="http://malsup.github.com/jquery.blockUI.js"></script>
 {% endblock %}
+{% load i18n %}
 {% load game_tags %}
 {% block subcontent %}
 <div class="game-container">
@@ -33,9 +34,9 @@
         <div class="selected row-fluid show-grid">
         </div>
         <br/>
-        <input type="button" id="submit" value="Submit" class="btn"/>
-        <input type="button" id="end_game" value="End game" class="btn"/>
-        <input type="button" id="reset_selected" value="Reset selected" class="btn" style="display: none;"/>
+        <input type="button" id="submit" value="{% trans 'Submit' %}" class="btn"/>
+        <input type="button" id="end_game" value="{% trans 'End game' %}" class="btn"/>
+        <input type="button" id="reset_selected" value="{% trans 'Reset selected' %}" class="btn" style="display: none;"/>
     </div>
 </div>
 <script type="text/javascript">
@@ -130,7 +131,7 @@ function get_player_name(user_id){
 }
 function show_info(user, data){
     var username = get_player_name(user);
-    var text = username + " played word " + data.word;
+    var text = username + " {% trans 'played word'%} " + data.word;
     var info_div = $('#game_info');
     info_div.html(text);
     info_div.show('slow');

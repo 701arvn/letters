@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block head %}
     <style type="text/css">
         body {
@@ -44,8 +45,8 @@
 
         <div class="masthead">
             <ul class="nav nav-pills pull-right">
-                <li><a href="/">Home</a></li>
-                <li><a href="/logout">Logout</a></li>
+                <li><a href="/">{% trans "Home" %}</a></li>
+                <li><a href="/logout">{% trans "Logout" %}</a></li>
             </ul>
             <h3 class="muted">Lettersquare</h3>
         </div>
