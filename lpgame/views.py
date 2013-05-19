@@ -40,8 +40,27 @@ def game_view(request, session_id):
         if len(game.gamers) == game.MAX_GAMERS:
             logger.debug("too many gamers in game {}".format(session_id))
             raise Http404  # TODO more specific error
-        game.new_player(request.user.pk)
+        game.new_player(request.user)
     letters = game.letters
+    opponent = game.opponent(request.user.pk)
+    if opponent is None:
+        opponent_name = ''
+        opponent_points = 0
+    else:
+        opponent_name = opponent.get_full_name()
+        opponent_points = game.score()[opponent.pk]
+    gamers = {
+        'me':
+            {
+                'name': request.user.get_full_name(),
+                'points': game.score()[request.user.pk]
+            },
+        'opponent':
+            {
+                'name': opponent_name,
+                'points': opponent_points
+            }
+    }
     rows_count = int(math.sqrt(len(letters)))
     rows = []
     for i in xrange(rows_count):
@@ -49,6 +68,7 @@ def game_view(request, session_id):
 
     variables = {
         'game': game,
+        'gamers': gamers,
         'ready': len(game.gamers) == game.MAX_GAMERS,
         'session_id': session_id,
         'async_url': settings.ASYNC_BACKEND_URL,

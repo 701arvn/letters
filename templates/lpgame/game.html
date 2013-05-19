@@ -12,7 +12,11 @@
     <div class="alert alert-info" id="turn_info" style="display: none;">{% trans "Waiting for other player's turn" %}</div>
     <div class="alert alert-error" id="error_info" style="display: none;"></div>
     <div class="game-field">
-        <div class="game_score">{% current_score %}</div>
+        <div class="game_score" style="display: none;">
+            <div class="user" id="name_user1">{{ gamers.me.name }}</div>
+            <div class="score" id="score_user1">{{ gamers.me.points }}</div> – <div class="score" id="score_user2">{{ gamers.opponent.points }}</div>
+            <div class="user" id="name_user2">{{ gamers.opponent.name }}</div>
+        </div>
         <div class="letters-space">
         {% for letters in rows %}
             <div class="row-fluid show-grid">
@@ -57,6 +61,7 @@ $(document).ready(function (){
             $('#game_info').show();
         }
     }
+    if (game_ready) $('div.game_score').show();
     $("a.letter").click(function(){
         var $this = $(this);
         var div = $($this.children());
@@ -162,11 +167,11 @@ function new_connection(){
     };
     sock.onmessage = function(e) {
         var eventType = e.data.event;
+        var eventData = JSON.parse(e.data.data);
         {% if DEBUG %}
             console.log(e.data);
         {% endif %}
         if (eventType == 'new_turn' || eventType == 'game_over'){
-            var eventData = JSON.parse(e.data.data);
             var eventUser = e.data.user;
             eventData.letters.forEach(function(l_id){
                 var user, prev;
@@ -201,8 +206,10 @@ function new_connection(){
             }
         }
         else if (eventType == 'game_ready'){
-            $('#submit').prop('disabled', false)
-            $('#game_info').hide()
+            $('#submit').prop('disabled', false);
+            $('#game_info').hide();
+            $('#name_user2').html(eventData.opponent_name);
+            $('div.game_score').show();
         }
         else if (eventType == 'game_ended'){
             $('input.btn').prop('disabled', true);

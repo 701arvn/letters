@@ -1,9 +1,9 @@
 import random
 import string
 import logging
-from base import send_event
-
+from django.contrib.auth.models import User
 from mongoengine import *
+from base import send_event
 
 logger = logging.getLogger('lpgame')
 
@@ -72,11 +72,19 @@ class Game(Document):
             result_score[letter.gamer] += 1
         return result_score
 
-    def new_player(self, user_id):
+    def new_player(self, user):
+        user_id = user.pk
         self.gamers.append(user_id)
         self.save()
         if len(self.gamers) == self.MAX_GAMERS:
-            send_event('game_ready', {}, self.session_id)
+            send_event('game_ready', {'opponent_name': user.get_full_name()}, self.session_id)
+
+    def opponent(self, user_id):
+        for gamer in self.gamers:
+            if gamer != user_id:
+                return User.objects.get(pk=gamer)
+        return None
+
 
     @property
     def winner(self):

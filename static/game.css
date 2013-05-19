@@ -16,6 +16,12 @@
 .show-grid .user1 {
     background-color: #8FBCDB;
 }
+#score_user1{
+    color: #8FBCDB;
+}
+#score_user2{
+    color: #DF7782;
+}
 .show-grid .user2 {
     background-color: #DF7782;
 }
