@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-18 20:01+0600\n"
+"POT-Creation-Date: 2013-05-19 15:31+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,17 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: templates/lpgame/game.html:11
+#: lpgame/views.py:78
+#, python-format
+msgid "Word %s already used"
+msgstr "Слово %s уже использовано"
+
+#: lpgame/views.py:85
+#, python-format
+msgid "%s is not a word"
+msgstr "%s – это не слово"
+
+#: templates/lpgame/game.html:10
 msgid "Waiting for other player's turn"
 msgstr "Ожидание хода другого игрока"
 
@@ -35,7 +45,11 @@ msgstr "Закончить игру"
 msgid "Reset selected"
 msgstr "Сбросить"
 
-#: templates/lpgame/game.html:137
+#: templates/lpgame/game.html:101
+msgid "Server error"
+msgstr "Ошибка сервера"
+
+#: templates/lpgame/game.html:141
 msgid "played word"
 msgstr "сыграл слово"
 

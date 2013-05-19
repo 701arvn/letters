@@ -8,6 +8,7 @@
 <div class="game-container">
     <div class="alert alert-info" id="game_info" style="display: none;"></div>
     <div class="alert alert-success" id="turn_info" style="display: none;">{% trans "Waiting for other player's turn" %}</div>
+    <div class="alert alert-error" id="error_info" style="display: none;"></div>
     <div class="game-field">
         <div class="game_score">{% current_score %}</div>
         <div class="letters-space">
@@ -92,10 +93,14 @@ $(document).ready(function (){
                 $("#turn_info").show();
             }
             else{
-                alert(data.error)
+                $('#error_info').html(data.error);
+                $('#error_info').show();
+                setTimeout("$('#error_info').hide('slow')", 20000);
             }
         }).fail(function(data){
-            alert('Some server error');
+            $('#error_info').html("{% trans 'Server error' %}");
+            $('#error_info').show();
+            setTimeout("$('#error_info').hide('slow')", 20000);
     })
     })
     $('input#end_game').click(function(){
@@ -114,6 +119,7 @@ $(document).ready(function (){
         selected = [];
         $('div.checked').removeClass('checked');
         show_word();
+        $('#error_info').hide();
     })
     new_connection();
 });

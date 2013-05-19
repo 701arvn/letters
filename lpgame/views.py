@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.conf import settings
 from django.http import HttpResponse, Http404
+from django.utils.translation import ugettext as _
 from base import get_uniq_hash
 from models import *
 
@@ -74,14 +75,14 @@ def make_turn(request):
     except WordAlreadyUsedException:
         return HttpResponse(
             json.dumps(
-                {'success': False, 'error': "Word already used", 'code': 1}
+                {'success': False, 'error': _("Word %s already used") % word, 'code': 1}
             ),
             mimetype="application/json"
         )
     except NotAWordException:
         return HttpResponse(
             json.dumps(
-                {'success': False, 'error': "Not a word", 'code': 2}
+                {'success': False, 'error': _("%s is not a word") % word, 'code': 2}
             ),
             mimetype="application/json"
         )
