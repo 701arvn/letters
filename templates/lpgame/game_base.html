@@ -37,6 +37,9 @@
         .marketing p + h4 {
             margin-top: 28px;
         }
+        #home_link{
+            text-decoration: none;
+        }
     </style>
     {% block subhead %}{% endblock %}
 {% endblock %}
@@ -48,7 +51,7 @@
                 <li><a href="/">{% trans "Home" %}</a></li>
                 <li><a href="/logout">{% trans "Logout" %}</a></li>
             </ul>
-            <h3 class="muted">Lettersquare</h3>
+            <a href="/" id="home_link"><h3 class="muted">Lettersquare</h3></a>
         </div>
 
         <hr>
