@@ -51,6 +51,10 @@ $(document).ready(function (){
     if (!current_player || !game_ready){
         $('#submit').prop('disabled', true)
         if (!current_player) $("#turn_info").show();
+        if (!game_ready){
+            $('#game_info').html("<strong>{% trans 'Waiting for second player' %}</strong> {% trans 'Send this page link to your friend to get started!' %}");
+            $('#game_info').show();
+        }
     }
     $("a.letter").click(function(){
         var $this = $(this);
@@ -197,6 +201,7 @@ function new_connection(){
         }
         else if (eventType == 'game_ready'){
             $('#submit').prop('disabled', false)
+            $('#game_info').hide()
         }
         else if (eventType == 'game_ended'){
             $('input.btn').prop('disabled', true);

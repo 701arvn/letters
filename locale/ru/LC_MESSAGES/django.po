@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-19 16:11+0600\n"
+"POT-Creation-Date: 2013-05-19 17:16+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,12 +19,12 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: lpgame/views.py:78
+#: lpgame/views.py:77
 #, python-format
 msgid "Word %s already used"
 msgstr "Слово %s уже использовано"
 
-#: lpgame/views.py:85
+#: lpgame/views.py:84
 #, python-format
 msgid "%s is not a word"
 msgstr "%s – это не слово"
@@ -45,19 +45,27 @@ msgstr "Закончить игру"
 msgid "Reset selected"
 msgstr "Сбросить"
 
-#: templates/lpgame/game.html:102
+#: templates/lpgame/game.html:55
+msgid "Waiting for second player"
+msgstr "Ожидание второго игрока"
+
+#: templates/lpgame/game.html:55
+msgid "Send this page link to your friend to get started!"
+msgstr "Отправь ссылку на эту страницу своему другу, чтобы начать!"
+
+#: templates/lpgame/game.html:106
 msgid "Server error"
 msgstr "Ошибка сервера"
 
-#: templates/lpgame/game.html:143
+#: templates/lpgame/game.html:147
 msgid "played word"
 msgstr "сыграл слово"
 
-#: templates/lpgame/game.html:188
+#: templates/lpgame/game.html:197
 msgid "The winner is"
 msgstr "Игра окончена. Победитель –"
 
-#: templates/lpgame/game.html:203
+#: templates/lpgame/game.html:208
 msgid "The game is ended"
 msgstr "Игра завершена"
 
@@ -77,11 +85,11 @@ msgstr "Новая игра"
 msgid "Your turn!"
 msgstr "Твой ход!"
 
-#: templates/registration/login.html:47
+#: templates/registration/login.html:46
 msgid "Your username and password didn't match. Please try again."
 msgstr "Ввведен неверный логин или пароль. Попробуйте еще раз"
 
-#: templates/registration/login.html:51
+#: templates/registration/login.html:50
 msgid "Please sign in"
 msgstr "Пожалуйста войдите"
 
