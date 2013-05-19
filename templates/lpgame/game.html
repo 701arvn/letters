@@ -1,9 +1,10 @@
 {% extends 'lpgame/game_base.html' %}
-{% block subhead %}
-    <link href="{{ STATIC_URL }}game.css" rel="stylesheet">
-{% endblock %}
+{% load staticfiles %}
 {% load i18n %}
 {% load game_tags %}
+{% block subhead %}
+    <link href="{% static 'game.css' %}" rel="stylesheet">
+{% endblock %}
 {% block subcontent %}
 <div class="game-container">
     <div class="alert alert-success" id="game_over" style="display: none;"></div>

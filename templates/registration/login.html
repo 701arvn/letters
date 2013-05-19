@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load staticfiles %}
 {% block head %}
     <style type="text/css" xmlns="http://www.w3.org/1999/html">
         body {
@@ -57,7 +58,7 @@
         <div class="tw_login">
 
             <a href="{% url 'socialauth_begin' 'twitter' %}{% if next %}?next={{ next }}{% endif %}">
-                <img src="{{ STATIC_URL }}sign-in-with-twitter-gray.png">
+                <img src="{% static 'sign-in-with-twitter-gray.png' %}">
             </a>
         </div>
     </form>
