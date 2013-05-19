@@ -42,17 +42,18 @@
 {% block content %}
 
 <div class="container">
-
     {% if form.errors %}
         <div class="alert alert-error">{% trans "Your username and password didn't match. Please try again." %}</div>
     {% endif %}
 
     <form class="form-signin" method="post" action="{% url "django.contrib.auth.views.login" %}">{% csrf_token %}
         <h2 class="form-signin-heading">{% trans "Please sign in" %}</h2>
-        <input type="text" class="input-block-level" placeholder="{% trans 'Username' %}" name="username">
-        <input type="password" class="input-block-level" placeholder="{% trans 'Password' %}" name="password">
-        <button class="btn btn-large btn-primary" type="submit">{% trans "Sign in" %}</button>
-        <input type="hidden" name="next" value="{{ next }}" />
+        {% if DEBUG %}
+            <input type="text" class="input-block-level" placeholder="{% trans 'Username' %}" name="username">
+            <input type="password" class="input-block-level" placeholder="{% trans 'Password' %}" name="password">
+            <button class="btn btn-large btn-primary" type="submit">{% trans "Sign in" %}</button>
+            <input type="hidden" name="next" value="{{ next }}" />
+        {% endif %}
         <div class="tw_login">
             <a href="/login/twitter/"><img src="{{ STATIC_URL }}sign-in-with-twitter-gray.png"></a>
         </div>

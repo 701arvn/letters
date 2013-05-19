@@ -150,14 +150,14 @@ function show_info(user, data){
 function new_connection(){
     var sock = new SockJS('{{ async_url }}/sockjs');
     sock.onopen = function() {
-        {% if debug %}
+        {% if DEBUG %}
             console.log('open');
         {% endif %}
         send_session_id()
     };
     sock.onmessage = function(e) {
         var eventType = e.data.event;
-        {% if debug %}
+        {% if DEBUG %}
             console.log(e.data);
         {% endif %}
         if (eventType == 'new_turn' || eventType == 'game_over'){
@@ -206,7 +206,7 @@ function new_connection(){
         }
     };
     sock.onclose = function() {
-        {% if debug %}
+        {% if DEBUG %}
             console.log('closed');
         {% endif %}
         setTimeout('new_connection()', 5000);
