@@ -15,7 +15,7 @@
         <div class="game_score" style="display: none;">
             <div class="user" id="name_user1">{{ gamers.me.name }}</div>
             <div class="score" id="score_user1">{{ gamers.me.points }}</div> – <div class="score" id="score_user2">{{ gamers.opponent.points }}</div>
-            <div class="user" id="name_user2">{{ gamers.opponent.name }}</div>
+            <div class="user opponent_name" id="name_user2">{{ gamers.opponent.name }}</div>
         </div>
         <div class="letters-space">
         {% for letters in rows %}
@@ -44,6 +44,29 @@
         <input type="button" id="submit" value="{% trans 'Submit' %}" class="btn"/>
         <input type="button" id="end_game" value="{% trans 'End game' %}" class="btn"/>
         <input type="button" id="reset_selected" value="{% trans 'Reset selected' %}" class="btn" style="display: none;"/>
+        <hr>
+        <button class="btn btn-small btn-block" type="button" onclick="$(this).hide();$('div.all_words').slideDown();" id="words_button" style="display: none;">{% trans "Show words" %}</button>
+        <div class="row-fluid all_words" style="display: none;">
+            <div class="span6">
+                <h5>{{ gamers.me.name }}</h5>
+                <ul class="unstyled user1_words">
+                    {% for word in gamers.me.words %}
+                        <li>{{ word }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="span6">
+                <h5 class="opponent_name">{{ gamers.opponent.name }}</h5>
+                <ul class="unstyled user2_words">
+                    {% for word in gamers.opponent.words %}
+                        <li>{{ word }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            </div>
+        </div>
     </div>
 </div>
 <script type="text/javascript">
@@ -61,7 +84,10 @@ $(document).ready(function (){
             $('#game_info').show();
         }
     }
-    if (game_ready) $('div.game_score').show();
+    if (game_ready) {
+        $('div.game_score').show();
+        $('#words_button').show();
+    }
     $("a.letter").click(function(){
         var $this = $(this);
         var div = $($this.children());
@@ -106,12 +132,12 @@ $(document).ready(function (){
             else{
                 $('#error_info').html(data.error);
                 $('#error_info').show();
-                setTimeout("$('#error_info').hide('slow')", 20000);
+                setTimeout("$('#error_info').hide()", 10000);
             }
         }).fail(function(data){
             $('#error_info').html("{% trans 'Server error' %}");
             $('#error_info').show();
-            setTimeout("$('#error_info').hide('slow')", 20000);
+            setTimeout("$('#error_info').hide()", 10000);
     })
     })
     $('input#end_game').click(function(){
@@ -154,7 +180,7 @@ function show_info(user, data){
     var info_div = $('#game_info');
     info_div.html(text);
     info_div.show();
-    setTimeout("$('#game_info').hide('slow')", 20000);
+    setTimeout("$('#game_info').hide('slow')", 10000);
 
 }
 function new_connection(){
@@ -198,6 +224,10 @@ function new_connection(){
                 show_info(eventUser, eventData);
                 $('#submit').prop('disabled', false)
                 $("#turn_info").hide();
+                $('ul.user2_words').append($('<li>').html(eventData.word));
+            }
+            else{
+                $('ul.user1_words').append($('<li>').html(eventData.word));
             }
             if (eventType == 'game_over'){
                 $('#game_over').html("{% trans 'The winner is' %}" + " " + get_player_name(eventData.winner));
@@ -208,8 +238,9 @@ function new_connection(){
         else if (eventType == 'game_ready'){
             $('#submit').prop('disabled', false);
             $('#game_info').hide();
-            $('#name_user2').html(eventData.opponent_name);
+            $('.opponent_name').html(eventData.opponent_name);
             $('div.game_score').show();
+            $('#words_button').show();
         }
         else if (eventType == 'game_ended'){
             $('input.btn').prop('disabled', true);

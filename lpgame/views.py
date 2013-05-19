@@ -46,19 +46,23 @@ def game_view(request, session_id):
     if opponent is None:
         opponent_name = ''
         opponent_points = 0
+        opponent_words = []
     else:
         opponent_name = opponent.get_full_name()
         opponent_points = game.score()[opponent.pk]
+        opponent_words = game.get_user_words(opponent.pk)
     gamers = {
         'me':
             {
                 'name': request.user.get_full_name(),
-                'points': game.score()[request.user.pk]
+                'points': game.score()[request.user.pk],
+                'words': game.get_user_words(request.user.pk)
             },
         'opponent':
             {
                 'name': opponent_name,
-                'points': opponent_points
+                'points': opponent_points,
+                'words': opponent_words
             }
     }
     rows_count = int(math.sqrt(len(letters)))
@@ -74,7 +78,8 @@ def game_view(request, session_id):
         'async_url': settings.ASYNC_BACKEND_URL,
         'rows': rows,
         'user_id': request.user.pk,
-        'is_current_player': game.is_current_player(request.user.pk)
+        'is_current_player': game.is_current_player(request.user.pk),
+        'DEBUG': settings.DEBUG
     }
     return render(request, 'lpgame/game.html', variables)
 

@@ -85,6 +85,12 @@ class Game(Document):
                 return User.objects.get(pk=gamer)
         return None
 
+    def get_user_words(self, user_id):
+        for words in self.played_words:
+            if words.gamer == user_id:
+                return words.words
+        return []
+
 
     @property
     def winner(self):
@@ -153,7 +159,6 @@ def send_event_on_user_turn(game, word, letters, user):
         'score': game.score(),
         'word': word
     }
-    send_event('new_turn', data, game.session_id, user.pk)
     if game.is_all_letters_played():
         game.end()
         logger.info("game {} has ended, the winner is {}".format(
@@ -162,6 +167,8 @@ def send_event_on_user_turn(game, word, letters, user):
         ))
         data['winner'] = game.winner
         send_event('game_over', data, game.session_id, user.pk)
+    else:
+        send_event('new_turn', data, game.session_id, user.pk)
 
 
 def on_user_turn(game, word, letters, user):
