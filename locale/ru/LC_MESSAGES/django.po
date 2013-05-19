@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-19 15:31+0600\n"
+"POT-Creation-Date: 2013-05-19 16:11+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,35 +29,43 @@ msgstr "Слово %s уже использовано"
 msgid "%s is not a word"
 msgstr "%s – это не слово"
 
-#: templates/lpgame/game.html:10
+#: templates/lpgame/game.html:11
 msgid "Waiting for other player's turn"
 msgstr "Ожидание хода другого игрока"
 
-#: templates/lpgame/game.html:38
+#: templates/lpgame/game.html:39
 msgid "Submit"
 msgstr "Отправить"
 
-#: templates/lpgame/game.html:39
+#: templates/lpgame/game.html:40
 msgid "End game"
 msgstr "Закончить игру"
 
-#: templates/lpgame/game.html:40
+#: templates/lpgame/game.html:41
 msgid "Reset selected"
 msgstr "Сбросить"
 
-#: templates/lpgame/game.html:101
+#: templates/lpgame/game.html:102
 msgid "Server error"
 msgstr "Ошибка сервера"
 
-#: templates/lpgame/game.html:141
+#: templates/lpgame/game.html:143
 msgid "played word"
 msgstr "сыграл слово"
 
-#: templates/lpgame/game_base.html:48
+#: templates/lpgame/game.html:188
+msgid "The winner is"
+msgstr "Игра окончена. Победитель –"
+
+#: templates/lpgame/game.html:203
+msgid "The game is ended"
+msgstr "Игра завершена"
+
+#: templates/lpgame/game_base.html:51
 msgid "Home"
 msgstr "Главная"
 
-#: templates/lpgame/game_base.html:49
+#: templates/lpgame/game_base.html:52
 msgid "Logout"
 msgstr "Выйти"
 

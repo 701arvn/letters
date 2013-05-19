@@ -153,7 +153,7 @@ def send_event_on_user_turn(game, word, letters, user):
             user.username
         ))
         data['winner'] = game.winner
-        send_event('game_over', data, game.session_id)  # TODO handle it in js
+        send_event('game_over', data, game.session_id, user.pk)
 
 
 def on_user_turn(game, word, letters, user):

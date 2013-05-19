@@ -6,8 +6,9 @@
 {% load game_tags %}
 {% block subcontent %}
 <div class="game-container">
-    <div class="alert alert-info" id="game_info" style="display: none;"></div>
-    <div class="alert alert-success" id="turn_info" style="display: none;">{% trans "Waiting for other player's turn" %}</div>
+    <div class="alert alert-success" id="game_over" style="display: none;"></div>
+    <div class="alert" id="game_info" style="display: none;"></div>
+    <div class="alert alert-info" id="turn_info" style="display: none;">{% trans "Waiting for other player's turn" %}</div>
     <div class="alert alert-error" id="error_info" style="display: none;"></div>
     <div class="game-field">
         <div class="game_score">{% current_score %}</div>
@@ -142,7 +143,7 @@ function show_info(user, data){
     var text = username + " {% trans 'played word'%} " + data.word;
     var info_div = $('#game_info');
     info_div.html(text);
-    info_div.show('slow');
+    info_div.show();
     setTimeout("$('#game_info').hide('slow')", 20000);
 
 }
@@ -159,11 +160,11 @@ function new_connection(){
         {% if debug %}
             console.log(e.data);
         {% endif %}
-        if (eventType == 'new_turn'){
+        if (eventType == 'new_turn' || eventType == 'game_over'){
             var eventData = JSON.parse(e.data.data);
             var eventUser = e.data.user;
             eventData.letters.forEach(function(l_id){
-                var user = null;
+                var user, prev;
                 if (eventUser == {{ user_id }}){
                     user = 'user1';
                     prev = 'user2';
@@ -188,9 +189,20 @@ function new_connection(){
                 $('#submit').prop('disabled', false)
                 $("#turn_info").hide();
             }
+            if (eventType == 'game_over'){
+                $('#game_over').html("{% trans 'The winner is' %}" + " " + get_player_name(eventData.winner));
+                $('#game_over').show();
+                $('input.btn').prop('disabled', true);
+            }
         }
         else if (eventType == 'game_ready'){
             $('#submit').prop('disabled', false)
+        }
+        else if (eventType == 'game_ended'){
+            $('input.btn').prop('disabled', true);
+            $('#error_info').html("{% trans 'The game is ended' %}");
+            $('#error_info').show();
+
         }
     };
     sock.onclose = function() {
