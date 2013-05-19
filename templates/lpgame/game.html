@@ -232,6 +232,7 @@ function new_connection(){
             if (eventType == 'game_over'){
                 $('#game_over').html("{% trans 'The winner is' %}" + " " + get_player_name(eventData.winner));
                 $('#game_over').show();
+                $("#turn_info").hide();
                 $('input.btn').prop('disabled', true);
             }
         }
